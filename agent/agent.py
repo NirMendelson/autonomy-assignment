@@ -126,6 +126,7 @@ class I18nAgent:
             if (candidate.get('is_jsx_text', False) or 
                 candidate.get('is_button_text', False) or 
                 candidate.get('is_link_text', False) or
+                candidate.get('is_function_call_text', False) or
                 candidate.get('is_object_property', False) and len(text) > 3):
                 ui_candidates.append(candidate)
             

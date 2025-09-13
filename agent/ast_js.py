@@ -51,6 +51,18 @@ class JavaScriptASTParser:
                 'Connect Github' in node.text.decode('utf-8')):
                 print(f"DEBUG: Found 'Connect Github': type={node.type}, line={node.start_point[0] + 1 if hasattr(node, 'start_point') else 'unknown'}")
             
+            # Debug: Check for "Log in to Builder Book" in any node
+            if (hasattr(node, 'text') and 
+                node.text and 
+                'Log in to Builder Book' in node.text.decode('utf-8')):
+                print(f"DEBUG: Found 'Log in to Builder Book': type={node.type}, line={node.start_point[0] + 1 if hasattr(node, 'start_point') else 'unknown'}")
+            
+            # Debug: Check for "Synced" in any node
+            if (hasattr(node, 'text') and 
+                node.text and 
+                'Synced' in node.text.decode('utf-8')):
+                print(f"DEBUG: Found 'Synced': type={node.type}, line={node.start_point[0] + 1 if hasattr(node, 'start_point') else 'unknown'}")
+            
             # Debug: Check all node types we're processing
             if node.type == 'string' or node.type == 'jsx_text':
                 # Get the actual string content
@@ -77,12 +89,31 @@ class JavaScriptASTParser:
                     print(f"DEBUG: Raw text: '{node.text.decode('utf-8')}'")
                     print(f"DEBUG: Stripped text: '{text}'")
                 
+                # Debug: Check if this is "Log in to Builder Book" before processing
+                if 'Log in to Builder Book' in text:
+                    print(f"DEBUG: Processing 'Log in to Builder Book' as {node.type} at line {node.start_point[0] + 1}")
+                    print(f"DEBUG: Raw text: '{node.text.decode('utf-8')}'")
+                    print(f"DEBUG: Stripped text: '{text}'")
+                
+                # Debug: Check if this is "Synced" before processing
+                if 'Synced' in text:
+                    print(f"DEBUG: Processing 'Synced' as {node.type} at line {node.start_point[0] + 1}")
+                    print(f"DEBUG: Raw text: '{node.text.decode('utf-8')}'")
+                    print(f"DEBUG: Stripped text: '{text}'")
+                
                 # Debug: Check if we found the Connect Github string
                 if text == 'Connect Github':
                     print(f"DEBUG: Found 'Connect Github' {node.type} at line {node.start_point[0] + 1}")
                     print(f"DEBUG: Connect Github text: '{text}'")
                     print(f"DEBUG: Connect Github parent: {parent.type if parent else 'None'}")
                     print(f"DEBUG: Connect Github grandparent: {grandparent.type if grandparent else 'None'}")
+                
+                # Debug: Check if we found the "Log in to Builder Book" string
+                if text == 'Log in to Builder Book':
+                    print(f"DEBUG: Found 'Log in to Builder Book' {node.type} at line {node.start_point[0] + 1}")
+                    print(f"DEBUG: Log in to Builder Book text: '{text}'")
+                    print(f"DEBUG: Log in to Builder Book parent: {parent.type if parent else 'None'}")
+                    print(f"DEBUG: Log in to Builder Book grandparent: {grandparent.type if grandparent else 'None'}")
                 
                 context = {
                     'text': text,
@@ -100,6 +131,7 @@ class JavaScriptASTParser:
                     'is_array_element': self._is_array_element(node),
                     'is_button_text': self._is_button_text(node),
                     'is_link_text': self._is_link_text(node),
+                    'is_function_call_text': self._is_function_call_text(node),
                     'jsx_tag': self._get_jsx_tag(node),
                 }
                 
@@ -108,6 +140,20 @@ class JavaScriptASTParser:
                     print(f"DEBUG: Connect Github context built: {context}")
                     print(f"DEBUG: Connect Github is_jsx_text: {context['is_jsx_text']}")
                     print(f"DEBUG: Connect Github is_button_text: {context['is_button_text']}")
+                
+                # Debug: Check if this is "Log in to Builder Book" after context building
+                if text == 'Log in to Builder Book':
+                    print(f"DEBUG: Log in to Builder Book context built: {context}")
+                    print(f"DEBUG: Log in to Builder Book is_jsx_text: {context['is_jsx_text']}")
+                    print(f"DEBUG: Log in to Builder Book is_button_text: {context['is_button_text']}")
+                
+                # Debug: Check if this is "Synced" after context building
+                if text == 'Synced':
+                    print(f"DEBUG: Synced context built: {context}")
+                    print(f"DEBUG: Synced is_jsx_text: {context['is_jsx_text']}")
+                    print(f"DEBUG: Synced is_button_text: {context['is_button_text']}")
+                    print(f"DEBUG: Synced parent: {parent.type if parent else 'None'}")
+                    print(f"DEBUG: Synced grandparent: {grandparent.type if grandparent else 'None'}")
                 
                 candidates.append(context)
             
@@ -125,7 +171,7 @@ class JavaScriptASTParser:
     
     def _is_jsx_text(self, node: tree_sitter.Node) -> bool:
         """Check if the string is JSX text content."""
-        if node.type != 'string':
+        if node.type != 'string' and node.type != 'jsx_text':
             return False
         
         # Check if this is direct text content inside JSX elements
@@ -232,6 +278,23 @@ class JavaScriptASTParser:
                     if child.type == 'identifier' and child.text.decode('utf-8') == 'Link':
                         return True
             current = current.parent
+        return False
+    
+    def _is_function_call_text(self, node: tree_sitter.Node) -> bool:
+        """Check if the string is text inside a function call (like notify('Synced'))."""
+        if node.type != 'string':
+            return False
+        
+        # Check if parent is arguments and grandparent is call_expression
+        parent = node.parent
+        grandparent = parent.parent if parent else None
+        
+        if parent and parent.type == 'arguments' and grandparent and grandparent.type == 'call_expression':
+            # Check if this is a UI-related function call
+            for child in grandparent.children:
+                if child.type == 'identifier' and child.text.decode('utf-8') in ['notify', 'alert', 'console.log']:
+                    return True
+        
         return False
     
     def _get_jsx_tag(self, node: tree_sitter.Node) -> str:

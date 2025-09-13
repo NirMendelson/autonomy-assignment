@@ -28,6 +28,13 @@ class SafetyValidator:
             print(f"DEBUG: Safety check for 'Connect Github' - text: '{text}'")
             print(f"DEBUG: Context: {context}")
         
+        # Debug: Check if this is the "Log in to Builder Book" string
+        if text == 'Log in to Builder Book':
+            print(f"DEBUG: Safety check for 'Log in to Builder Book' - text: '{text}'")
+            print(f"DEBUG: Context: {context}")
+            print(f"DEBUG: About to check technical string for 'Log in to Builder Book'")
+            print(f"DEBUG: About to check skip patterns for 'Log in to Builder Book'")
+        
         # Skip empty or very short strings
         if len(text.strip()) < 2:
             return "Too short"
@@ -35,6 +42,8 @@ class SafetyValidator:
         # Skip strings that match skip patterns
         for pattern in self.compiled_patterns:
             if pattern.match(text):
+                if text == 'Log in to Builder Book':
+                    print(f"DEBUG: Log in to Builder Book caught by skip pattern: {pattern.pattern}")
                 return f"Matches skip pattern: {pattern.pattern}"
         
         # Skip strings that are clearly not UI text
@@ -43,7 +52,12 @@ class SafetyValidator:
         
         # Skip strings in non-UI contexts
         if self._is_non_ui_context(context):
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by non-UI context filter")
             return "Non-UI context"
+        
+        if text == 'Log in to Builder Book':
+            print(f"DEBUG: Log in to Builder Book passed all should_skip_string filters - returning None")
         
         return None
     
@@ -53,16 +67,25 @@ class SafetyValidator:
         if text == 'Admin':
             print(f"DEBUG: Safety _is_technical_string for 'Admin' - text: '{text}'")
         
+        # Debug: Check if this is the "Log in to Builder Book" string
+        if text == 'Log in to Builder Book':
+            print(f"DEBUG: Safety _is_technical_string for 'Log in to Builder Book' - text: '{text}'")
+            print(f"DEBUG: About to check technical string filters for 'Log in to Builder Book'")
+        
         # URLs
         if text.startswith(('http://', 'https://', '//', 'www.')):
             if text == 'Admin':
                 print(f"DEBUG: Admin caught by URLs filter")
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by URLs filter")
             return True
         
         # File paths
         if '/' in text and (text.endswith(('.js', '.jsx', '.css', '.png', '.jpg', '.svg'))):
             if text == 'Admin':
                 print(f"DEBUG: Admin caught by file paths filter")
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by file paths filter")
             return True
         
         # CSS classes (kebab-case)
@@ -81,6 +104,8 @@ class SafetyValidator:
         if re.match(r'^[a-z][a-zA-Z0-9]*$', text) and len(text) > 3:
             if text == 'Admin':
                 print(f"DEBUG: Admin caught by IDs filter")
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by IDs filter")
             return True
         
         # Email addresses
@@ -142,26 +167,45 @@ class SafetyValidator:
     
     def _is_non_ui_context(self, context: Dict[str, Any]) -> bool:
         """Check if string is in a non-UI context."""
+        # Debug: Check if this is the "Log in to Builder Book" string
+        if context.get('text') == 'Log in to Builder Book':
+            print(f"DEBUG: _is_non_ui_context processing 'Log in to Builder Book'")
+            print(f"DEBUG: parent_type: {context.get('parent_type')}")
+            print(f"DEBUG: attribute_name: {context.get('attribute_name')}")
+        
         # Skip strings in comments
         if context.get('parent_type') == 'comment':
+            if context.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by comment filter")
             return True
         
         # Skip strings in console.log, console.error, etc.
         if self._is_console_context(context):
+            if context.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by console context filter")
             return True
         
         # Skip strings in error messages or debugging
         if self._is_debug_context(context):
+            if context.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by debug context filter")
             return True
         
         # Skip strings in className or style attributes
         attr_name = context.get('attribute_name', '')
         if attr_name in ['className', 'class', 'style', 'id', 'key', 'ref']:
+            if context.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by attribute filter: {attr_name}")
             return True
         
         # Skip strings in data-* attributes
         if attr_name and attr_name.startswith('data-'):
+            if context.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by data attribute filter: {attr_name}")
             return True
+        
+        if context.get('text') == 'Log in to Builder Book':
+            print(f"DEBUG: Log in to Builder Book passed all non-UI context filters - returning False")
         
         return False
     
@@ -206,6 +250,10 @@ class SafetyValidator:
             return brace_count == 0 and paren_count == 0 and bracket_count == 0
         except Exception:
             return False
+        
+        # Debug: Check if "Log in to Builder Book" passed all filters
+        if text == 'Log in to Builder Book':
+            print(f"DEBUG: Log in to Builder Book passed all technical string filters - returning False")
     
     def get_ui_priority_strings(self, candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Filter and prioritize strings that are likely UI text."""
@@ -216,10 +264,17 @@ class SafetyValidator:
             if candidate.get('text') == 'Admin':
                 print(f"DEBUG: get_ui_priority_strings processing 'Admin'")
             
+            # Debug: Check if this is the "Log in to Builder Book" string
+            if candidate.get('text') == 'Log in to Builder Book':
+                print(f"DEBUG: get_ui_priority_strings processing 'Log in to Builder Book'")
+                print(f"DEBUG: Log in to Builder Book candidate: {candidate}")
+            
             skip_reason = self.should_skip_string(candidate)
             if skip_reason:
                 if candidate.get('text') == 'Admin':
                     print(f"DEBUG: Admin skipped by safety validator - reason: {skip_reason}")
+                if candidate.get('text') == 'Log in to Builder Book':
+                    print(f"DEBUG: Log in to Builder Book skipped by safety validator - reason: {skip_reason}")
                 candidate['skip_reason'] = skip_reason
                 continue
             

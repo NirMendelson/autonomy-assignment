@@ -1,4 +1,38 @@
 {
+  "pages\\admin\\book-detail.jsx": [
+    {
+      "line": 42,
+      "text": "Synced",
+      "tag": "unknown"
+    },
+    {
+      "line": 62,
+      "text": "Repo on Github",
+      "tag": "a"
+    },
+    {
+      "line": 71,
+      "text": "Sync with Github",
+      "tag": "Button"
+    },
+    {
+      "line": 75,
+      "text": "Edit book",
+      "tag": "Button"
+    }
+  ],
+  "pages\\admin\\index.jsx": [
+    {
+      "line": 26,
+      "text": "Books",
+      "tag": "h2"
+    },
+    {
+      "line": 28,
+      "text": "Add book",
+      "tag": "Button"
+    }
+  ],
   "components\\Header.jsx": [
     {
       "line": 13,
@@ -38,6 +72,21 @@
   ],
   "pages\\public\\login.jsx": [
     {
+      "line": 22,
+      "text": "Log in to Builder Book",
+      "tag": "title"
+    },
+    {
+      "line": 26,
+      "text": "Log in",
+      "tag": "p"
+    },
+    {
+      "line": 27,
+      "text": "You’ll be logged in for 14 days unless you log out manually.",
+      "tag": "p"
+    },
+    {
       "line": 36,
       "text": "Log in with Google",
       "tag": "img"
@@ -48,30 +97,101 @@
       "tag": "Button"
     }
   ],
-  "pages\\admin\\book-detail.jsx": [
+  "components\\admin\\EditBook.jsx": [
     {
-      "line": 71,
-      "text": "Sync with Github",
-      "tag": "Button"
+      "line": 48,
+      "text": "Name is required",
+      "tag": "unknown"
     },
     {
-      "line": 75,
-      "text": "Edit book",
-      "tag": "Button"
-    }
-  ],
-  "pages\\admin\\index.jsx": [
+      "line": 53,
+      "text": "Price is required",
+      "tag": "unknown"
+    },
     {
-      "line": 28,
-      "text": "Add book",
-      "tag": "Button"
-    }
-  ],
-  "components\\admin\\EditBook.jsx": [
+      "line": 58,
+      "text": "Github repo is required",
+      "tag": "unknown"
+    },
+    {
+      "line": 103,
+      "text": "Github repo:",
+      "tag": "span"
+    },
+    {
+      "line": 116,
+      "text": "-- choose github repo --",
+      "tag": "em"
+    },
     {
       "line": 127,
       "text": "Save",
       "tag": "Button"
+    }
+  ],
+  "pages\\index.jsx": [
+    {
+      "line": 25,
+      "text": "Settings",
+      "tag": "title"
+    },
+    {
+      "line": 28,
+      "text": "List of purchased books",
+      "tag": "p"
+    },
+    {
+      "line": 29,
+      "text": "Email:",
+      "tag": "p"
+    }
+  ],
+  "pages\\customer\\my-books.jsx": [
+    {
+      "line": 25,
+      "text": "My Books",
+      "tag": "title"
+    },
+    {
+      "line": 30,
+      "text": "Your books",
+      "tag": "h3"
+    },
+    {
+      "line": 48,
+      "text": "Your books",
+      "tag": "h3"
+    },
+    {
+      "line": 49,
+      "text": "You have not purchased any book.",
+      "tag": "p"
+    }
+  ],
+  "pages\\public\\read-chapter.jsx": [
+    {
+      "line": 117,
+      "text": "Checkout canceled",
+      "tag": "unknown"
+    }
+  ],
+  "pages\\admin\\add-book.jsx": [
+    {
+      "line": 16,
+      "text": "Saved",
+      "tag": "unknown"
+    },
+    {
+      "line": 20,
+      "text": "Synced",
+      "tag": "unknown"
+    }
+  ],
+  "pages\\admin\\edit-book.jsx": [
+    {
+      "line": 41,
+      "text": "Saved",
+      "tag": "unknown"
     }
   ]
 }
