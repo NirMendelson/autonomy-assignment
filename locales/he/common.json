@@ -1,0 +1,15 @@
+{
+  "common.text.nearButton": "15px",
+  "form.label.bookTitle": "form.label.bookTitle",
+  "form.label.bookPrice": "form.label.bookPrice",
+  "page.description.purchasedBooks": "page.description.purchasedBooks",
+  "page.description.loginPage": "page.description.loginPage",
+  "common.button.loginWithGoogle": "common.button.loginWithGoogle",
+  "login.title": "login.title",
+  "common.alt.builderBookLogo": "@mui/material/Toolbar",
+  "menu.myBooks": "menu.myBooks",
+  "menu.logout": "Log out",
+  "error.validation.required.name": "error.validation.required.name",
+  "error.validation.required.price": "error.validation.required.price",
+  "error.validation.required.githubRepo": "error.validation.required.githubRepo"
+}

@@ -66,17 +66,20 @@ class CodeTransformer:
             # <Trans> replacement for complex markup
             replacement = f"<Trans i18nKey='{key}'>{text}</Trans>"
         
-        # Replace the string in the line
-        # Handle different quote types
+        # More precise string replacement - only replace exact string matches
+        # Handle different quote types with word boundaries
         quote_patterns = [
-            f'"{re.escape(text)}"',
-            f"'{re.escape(text)}'",
-            f"`{re.escape(text)}`"
+            (f'"{re.escape(text)}"', f'"{replacement}"'),
+            (f"'{re.escape(text)}'", f"'{replacement}'"),
+            (f"`{re.escape(text)}`", f"`{replacement}`"),
+            # Handle strings without quotes (in JSX text)
+            (f'>{re.escape(text)}<', f'>{replacement}<'),
+            (f'>{re.escape(text)}</', f'>{replacement}</'),
         ]
         
-        for pattern in quote_patterns:
+        for pattern, replacement_pattern in quote_patterns:
             if re.search(pattern, line):
-                return re.sub(pattern, replacement, line)
+                return re.sub(pattern, replacement_pattern, line)
         
         return line
     
@@ -118,38 +121,38 @@ class CodeTransformer:
     
     def generate_i18n_config(self, output_dir: str) -> str:
         """Generate i18n configuration file."""
-        config_content = f"""import i18n from 'i18next';
+        config_content = """import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
-const resources = {{
-  en: {{
-    common: require('./locales/en/{self.namespace}.json')
-  }},
-  he: {{
-    common: require('./locales/he/{self.namespace}.json')
-  }}
-}};
+const resources = {
+  en: {
+    common: require('./locales/en/""" + self.namespace + """.json')
+  },
+  he: {
+    common: require('./locales/he/""" + self.namespace + """.json')
+  }
+};
 
 i18n
   .use(Backend)
   .use(LanguageDetector)
   .use(initReactI18next)
-  .init({{
+  .init({
     resources,
-    lng: '{self.default_locale}',
-    fallbackLng: '{self.default_locale}',
+    lng: '""" + self.default_locale + """',
+    fallbackLng: '""" + self.default_locale + """',
     debug: process.env.NODE_ENV === 'development',
     
-    interpolation: {{
+    interpolation: {
       escapeValue: false,
-    }},
+    },
     
-    react: {{
+    react: {
       useSuspense: false,
-    }},
-  }});
+    },
+  });
 
 export default i18n;
 """
@@ -192,6 +195,44 @@ export default i18n;
             
         except Exception as e:
             print(f"Error updating _app.jsx: {e}")
+            return False
+    
+    def add_use_translation_import(self, file_path: str) -> bool:
+        """Add useTranslation import to a file that uses t() function."""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Check if useTranslation is already imported
+            if 'useTranslation' in content:
+                return False
+            
+            # Check if file uses t() function
+            if 't(' not in content:
+                return False
+            
+            # Add useTranslation import
+            import_line = "import { useTranslation } from 'react-i18next';"
+            
+            # Find the first import statement
+            lines = content.split('\n')
+            import_idx = 0
+            for i, line in enumerate(lines):
+                if line.strip().startswith('import '):
+                    import_idx = i
+                    break
+            
+            # Insert useTranslation import
+            lines.insert(import_idx, import_line)
+            
+            # Write updated content
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(lines))
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error adding useTranslation import to {file_path}: {e}")
             return False
     
     def create_language_switcher(self, output_dir: str) -> str:

@@ -17,14 +17,22 @@ class LLMClassifier:
     
     def __init__(self, config: Dict[str, Any]):
         self.config = config
-        self.client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+        api_key = os.getenv('OPENAI_API_KEY')
+        self.client = OpenAI(api_key=api_key)
         self.model = os.getenv('MODEL', 'gpt-4o-mini')
         
         if not self.client.api_key:
-            raise ValueError("OPENAI_API_KEY not found in environment variables")
+            self.client = None
     
     def classify_strings(self, candidates: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Classify a batch of string candidates for i18n treatment."""
+        if not self.client:
+            # Return candidates with skip reason
+            for candidate in candidates:
+                candidate['action'] = 'skip'
+                candidate['reason'] = 'No OpenAI API key provided'
+            return candidates
+        
         results = []
         
         # Process in batches to avoid token limits

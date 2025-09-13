@@ -1,0 +1,4 @@
+# Copy this to .env in the project root
+OPENAI_API_KEY=your_actual_openai_api_key_here
+MODEL=gpt-4o-mini
+DRY_RUN=true

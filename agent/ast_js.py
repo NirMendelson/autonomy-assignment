@@ -68,6 +68,10 @@ class JavaScriptASTParser:
                     'is_jsx_text': self._is_jsx_text(node),
                     'attribute_name': self._get_attribute_name(node),
                     'is_aria_attribute': self._is_aria_attribute(node),
+                    'is_object_property': self._is_object_property(node),
+                    'is_array_element': self._is_array_element(node),
+                    'is_button_text': self._is_button_text(node),
+                    'is_link_text': self._is_link_text(node),
                 }
                 
                 candidates.append(context)
@@ -111,6 +115,44 @@ class JavaScriptASTParser:
         """Check if this is an aria-* attribute."""
         attr_name = self._get_attribute_name(node)
         return attr_name and attr_name.startswith('aria-')
+    
+    def _is_object_property(self, node: tree_sitter.Node) -> bool:
+        """Check if the string is a value in an object property."""
+        parent = node.parent
+        return parent and parent.type == 'pair'
+    
+    def _is_array_element(self, node: tree_sitter.Node) -> bool:
+        """Check if the string is an element in an array."""
+        parent = node.parent
+        return parent and parent.type == 'array'
+    
+    def _is_button_text(self, node: tree_sitter.Node) -> bool:
+        """Check if the string is text content inside a Button component."""
+        current = node.parent
+        while current:
+            if current.type == 'jsx_element':
+                # Check if this is a Button component
+                for child in current.children:
+                    if child.type == 'jsx_opening_element':
+                        for grandchild in child.children:
+                            if grandchild.type == 'identifier' and grandchild.text.decode('utf-8') == 'Button':
+                                return True
+            current = current.parent
+        return False
+    
+    def _is_link_text(self, node: tree_sitter.Node) -> bool:
+        """Check if the string is text content inside a Link component."""
+        current = node.parent
+        while current:
+            if current.type == 'jsx_element':
+                # Check if this is a Link component
+                for child in current.children:
+                    if child.type == 'jsx_opening_element':
+                        for grandchild in child.children:
+                            if grandchild.type == 'identifier' and grandchild.text.decode('utf-8') == 'Link':
+                                return True
+            current = current.parent
+        return False
     
     def get_code_context(self, tree: tree_sitter.Tree, node: tree_sitter.Node, file_content: str, lines_before: int = 3, lines_after: int = 3) -> str:
         """Get code context around a node for LLM analysis."""

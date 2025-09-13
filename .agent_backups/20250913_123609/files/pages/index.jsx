@@ -23,7 +23,7 @@ class Index extends React.Component {
       <div style={{ padding: '10px 45px' }}>
         <Head>
           <title>Settings</title>
-          <meta name="description" content="List of purchased books." />
+          <meta name="description" content={t({t('page.description.purchasedBooks')})} />
         </Head>
         <p>List of purchased books</p>
         <p>Email:&nbsp;{user.email}</p>

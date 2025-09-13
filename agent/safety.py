@@ -180,8 +180,24 @@ class SafetyValidator:
         if context.get('is_aria_attribute'):
             score += 8
         
+        # High priority for button text
+        if context.get('is_button_text'):
+            score += 8
+        
+        # High priority for link text
+        if context.get('is_link_text'):
+            score += 8
+        
         # Medium priority for other JSX attributes
         if context.get('is_jsx_attribute'):
+            score += 5
+        
+        # Medium priority for object properties (like menu options)
+        if context.get('is_object_property'):
+            score += 6
+        
+        # Medium priority for array elements (like menu items)
+        if context.get('is_array_element'):
             score += 5
         
         # Bonus for common UI attribute names
@@ -196,5 +212,11 @@ class SafetyValidator:
             score += 2
         elif text_length > 5:
             score += 1
+        
+        # Bonus for common UI words
+        text = context.get('text', '').lower()
+        ui_words = ['login', 'logout', 'admin', 'connect', 'github', 'books', 'settings', 'menu']
+        if any(word in text for word in ui_words):
+            score += 4
         
         return score

@@ -7,6 +7,7 @@ import sys
 import yaml
 import click
 from pathlib import Path
+
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -182,6 +183,9 @@ class I18nAgent:
                     # Write transformed content
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(new_content)
+                    
+                    # Add useTranslation import if needed
+                    self.transformer.add_use_translation_import(file_path)
                     
                     transformed_files.append({
                         'file': file_path,
