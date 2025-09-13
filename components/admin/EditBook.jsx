@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { getGithubReposApiMethod } from '../../lib/api/admin';
 import { styleTextField } from '../SharedStyles';
 import notify from '../../lib/notify';
+import { useTranslation } from 'react-i18next';
 
 const propTypes = {
   book: PropTypes.shape({
@@ -45,17 +46,17 @@ class EditBook extends React.Component {
     const { name, price, githubRepo } = this.state.book;
 
     if (!name) {
-      notify('Name is required');
+      notify(t(\"error.validation.required.name\"));
       return;
     }
 
     if (!price) {
-      notify('Price is required');
+      notify(t(\"error.validation.required.price\"));
       return;
     }
 
     if (!githubRepo) {
-      notify('Github repo is required');
+      notify(t(\"error.validation.githubRepoRequired\"));
       return;
     }
 
@@ -77,7 +78,7 @@ class EditBook extends React.Component {
               }}
               value={this.state.book.name}
               type="text"
-              label="Book's title"
+              label={t(\"form.label.bookTitle\")}
               style={styleTextField}
             />
           </div>
@@ -92,7 +93,7 @@ class EditBook extends React.Component {
             }}
             value={this.state.book.price}
             type="number"
-            label="Book's price"
+            label={t(\"form.label.bookPrice\")}
             className="textFieldInput"
             style={styleTextField}
             step="1"
@@ -100,7 +101,7 @@ class EditBook extends React.Component {
           <br />
           <br />
           <div>
-            <span>Github repo: </span>
+            <span>{t(\"common.label.githubRepo\")} </span>
             <Select
               value={this.state.book.githubRepo || ''}
               input={<Input />}
@@ -113,7 +114,7 @@ class EditBook extends React.Component {
               }}
             >
               <MenuItem value="">
-                <em>-- choose github repo --</em>
+                <em>{t(\"common.placeholder.chooseGithubRepo\")}</em>
               </MenuItem>
               {this.state.repos.map((r) => (
                 <MenuItem value={r.full_name} key={r.id}>

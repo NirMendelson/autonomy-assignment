@@ -305,7 +305,7 @@ class I18nAgent:
                         f.write(new_content)
                     
                     # Add useTranslation import if needed
-                    self.transformer.add_use_translation_import(file_path)
+                    self.transformer._ensure_use_translation_import(file_path)
                     
                     transformed_files.append({
                         'file': file_path,
