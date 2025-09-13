@@ -1,0 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+1. File length – Any file we create must be less than 350 lines of code.
+
+2. Generic design – The agent must be generic. Do not hardcode project-specific checks (like if text == "X" then Y). All detection rules should be pattern-based or loaded from config, never tied to one repo.

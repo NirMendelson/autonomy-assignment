@@ -101,7 +101,7 @@ class BuyButton extends React.Component {
           >
             {`Buy book for $${book.price}`}
           </Button>
-          <p style={{ verticalAlign: 'middle', fontSize: <Trans i18nKey='common.text.nearButton'>15px</Trans> }}>{book.textNearButton}</p>
+          <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
           <hr />
         </div>
       );
@@ -116,7 +116,7 @@ class BuyButton extends React.Component {
         >
           {`Buy book for $${book.price}`}
         </Button>
-        <p style={{ verticalAlign: 'middle', fontSize: <Trans i18nKey={t('common.text.nearButton')}>15px</Trans> }}>{book.textNearButton}</p>
+        <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
         <hr />
       </div>
     );

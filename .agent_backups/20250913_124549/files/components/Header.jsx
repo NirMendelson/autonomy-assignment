@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Link from 'next/link';
-import Toolbar from {t('common.alt.builderBookLogo')};
+import Toolbar from '@mui/material/Toolbar';
 import Grid from '@mui/material/Grid';
 import Hidden from '@mui/material/Hidden';
 import Button from '@mui/material/Button';
@@ -10,12 +10,12 @@ import MenuWithAvatar from './MenuWithAvatar';
 
 const optionsMenuCustomer = [
   {
-    text: {t({t('menu.myBooks')})},
+    text: 'My books',
     href: '/customer/my-books',
     as: '/my-books',
   },
   {
-    text: {t('menu.logout')},
+    text: 'Log out',
     href: '/logout',
     anchor: true,
   },
@@ -28,7 +28,7 @@ const optionsMenuAdmin = [
     as: '/admin',
   },
   {
-    text: {t({t('menu.logout')})},
+    text: 'Log out',
     href: '/logout',
     anchor: true,
   },
@@ -70,7 +70,7 @@ function Header({ user, hideHeader, redirectUrl }) {
               <Link href="/">
                 <Avatar
                   src="https://storage.googleapis.com/builderbook/logo.svg"
-                  alt={t('common.alt.builderBookLogo')}
+                  alt="Builder Book logo"
                   style={{ margin: '0px auto 0px 20px', cursor: 'pointer' }}
                 />
               </Link>

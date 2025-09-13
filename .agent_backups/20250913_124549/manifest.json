@@ -1,0 +1,244 @@
+{
+  "backup_id": "20250913_124549",
+  "created_at": "2025-09-13T12:45:49.803055",
+  "files": [
+    {
+      "original_path": "pages\\index.jsx",
+      "relative_path": "pages\\index.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\index.jsx",
+      "hash": "c12f65d04f7d12c394673c623fb1ed9f5785b9b72a0625fe1b6e4b2a139195cb",
+      "size": 886
+    },
+    {
+      "original_path": "pages\\_app.jsx",
+      "relative_path": "pages\\_app.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_app.jsx",
+      "hash": "d9e7d1841e83a6c14d94bd4f4120b79acb1146ae0dcc683fce8d56bfa0cc26e9",
+      "size": 2098
+    },
+    {
+      "original_path": "pages\\_document.jsx",
+      "relative_path": "pages\\_document.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_document.jsx",
+      "hash": "d1bf239dfe05bf610f4fc242381f2c97dcbfe0096e923dfc97cf3312e77e381f",
+      "size": 3877
+    },
+    {
+      "original_path": "pages\\admin\\add-book.jsx",
+      "relative_path": "pages\\admin\\add-book.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\add-book.jsx",
+      "hash": "93566bd792fca5f9b44d932227f58894d61a2022c21044a5ae56a5abc68bfe91",
+      "size": 1110
+    },
+    {
+      "original_path": "pages\\admin\\book-detail.jsx",
+      "relative_path": "pages\\admin\\book-detail.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\book-detail.jsx",
+      "hash": "1544af7068d91d304734a2c7ab9030a1830f8d77baf558d90dbee8fba614ba74",
+      "size": 2551
+    },
+    {
+      "original_path": "pages\\admin\\edit-book.jsx",
+      "relative_path": "pages\\admin\\edit-book.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\edit-book.jsx",
+      "hash": "e756a7388a2496d539b34584f4a84c1023bfd396747f8d97edc777b3d503c5d0",
+      "size": 1666
+    },
+    {
+      "original_path": "pages\\admin\\index.jsx",
+      "relative_path": "pages\\admin\\index.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\index.jsx",
+      "hash": "f3192222be760aa4c0a1839814fe6451b6a0246dd6d94a29af86709afb6e23b5",
+      "size": 2167
+    },
+    {
+      "original_path": "pages\\customer\\my-books.jsx",
+      "relative_path": "pages\\customer\\my-books.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\customer\\my-books.jsx",
+      "hash": "0a070ab8b32819be5d7af3943c3457d349ac4c476599e3cda842367f99bceae9",
+      "size": 1941
+    },
+    {
+      "original_path": "pages\\public\\login.jsx",
+      "relative_path": "pages\\public\\login.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\public\\login.jsx",
+      "hash": "f9b9dea8577740cbf45aad233d515f174e79f0d8135c8031883e53d40f444038",
+      "size": 1370
+    },
+    {
+      "original_path": "pages\\public\\read-chapter.jsx",
+      "relative_path": "pages\\public\\read-chapter.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\public\\read-chapter.jsx",
+      "hash": "60904163ecc87f937f136b46210ef3302d5bd36a0f3d3fdce8f431ff3f3b4c32",
+      "size": 11319
+    },
+    {
+      "original_path": "pages\\index.jsx",
+      "relative_path": "pages\\index.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\index.jsx",
+      "hash": "c12f65d04f7d12c394673c623fb1ed9f5785b9b72a0625fe1b6e4b2a139195cb",
+      "size": 886
+    },
+    {
+      "original_path": "pages\\_app.jsx",
+      "relative_path": "pages\\_app.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_app.jsx",
+      "hash": "d9e7d1841e83a6c14d94bd4f4120b79acb1146ae0dcc683fce8d56bfa0cc26e9",
+      "size": 2098
+    },
+    {
+      "original_path": "pages\\_document.jsx",
+      "relative_path": "pages\\_document.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_document.jsx",
+      "hash": "d1bf239dfe05bf610f4fc242381f2c97dcbfe0096e923dfc97cf3312e77e381f",
+      "size": 3877
+    },
+    {
+      "original_path": "pages\\admin\\add-book.jsx",
+      "relative_path": "pages\\admin\\add-book.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\add-book.jsx",
+      "hash": "93566bd792fca5f9b44d932227f58894d61a2022c21044a5ae56a5abc68bfe91",
+      "size": 1110
+    },
+    {
+      "original_path": "pages\\admin\\book-detail.jsx",
+      "relative_path": "pages\\admin\\book-detail.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\book-detail.jsx",
+      "hash": "1544af7068d91d304734a2c7ab9030a1830f8d77baf558d90dbee8fba614ba74",
+      "size": 2551
+    },
+    {
+      "original_path": "pages\\admin\\edit-book.jsx",
+      "relative_path": "pages\\admin\\edit-book.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\edit-book.jsx",
+      "hash": "e756a7388a2496d539b34584f4a84c1023bfd396747f8d97edc777b3d503c5d0",
+      "size": 1666
+    },
+    {
+      "original_path": "pages\\admin\\index.jsx",
+      "relative_path": "pages\\admin\\index.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\admin\\index.jsx",
+      "hash": "f3192222be760aa4c0a1839814fe6451b6a0246dd6d94a29af86709afb6e23b5",
+      "size": 2167
+    },
+    {
+      "original_path": "pages\\customer\\my-books.jsx",
+      "relative_path": "pages\\customer\\my-books.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\customer\\my-books.jsx",
+      "hash": "0a070ab8b32819be5d7af3943c3457d349ac4c476599e3cda842367f99bceae9",
+      "size": 1941
+    },
+    {
+      "original_path": "pages\\public\\login.jsx",
+      "relative_path": "pages\\public\\login.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\public\\login.jsx",
+      "hash": "f9b9dea8577740cbf45aad233d515f174e79f0d8135c8031883e53d40f444038",
+      "size": 1370
+    },
+    {
+      "original_path": "pages\\public\\read-chapter.jsx",
+      "relative_path": "pages\\public\\read-chapter.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\public\\read-chapter.jsx",
+      "hash": "60904163ecc87f937f136b46210ef3302d5bd36a0f3d3fdce8f431ff3f3b4c32",
+      "size": 11319
+    },
+    {
+      "original_path": "components\\Header.jsx",
+      "relative_path": "components\\Header.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\Header.jsx",
+      "hash": "ab3b2c664bcef7c095709ece3bc6c13272a10311ec42580f7548cacc37867560",
+      "size": 3633
+    },
+    {
+      "original_path": "components\\MenuWithAvatar.jsx",
+      "relative_path": "components\\MenuWithAvatar.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\MenuWithAvatar.jsx",
+      "hash": "9db51f9e01bd133fa49cb5f81b6ef55215bf5a1e04a91861766240037174d950",
+      "size": 2101
+    },
+    {
+      "original_path": "components\\Notifier.jsx",
+      "relative_path": "components\\Notifier.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\Notifier.jsx",
+      "hash": "ba4d20badca4b84512f37b457dbc07f7c98aab26b1d4ca29b14dd60600f5103f",
+      "size": 1161
+    },
+    {
+      "original_path": "components\\SharedStyles.js",
+      "relative_path": "components\\SharedStyles.js",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\SharedStyles.js",
+      "hash": "7220589251e636d0840ac021ac1314dee8c224073652e21b345147af8c5495af",
+      "size": 401
+    },
+    {
+      "original_path": "components\\admin\\EditBook.jsx",
+      "relative_path": "components\\admin\\EditBook.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\admin\\EditBook.jsx",
+      "hash": "c2c60ff977119b20aa7a8554c89d42cf03b97846a71f254d73e09fb120cdba3a",
+      "size": 3674
+    },
+    {
+      "original_path": "components\\customer\\BuyButton.jsx",
+      "relative_path": "components\\customer\\BuyButton.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\customer\\BuyButton.jsx",
+      "hash": "221a215331fff5eb28b1068f749a0f502957fecd48aa82e0edb2331527052e15",
+      "size": 3248
+    },
+    {
+      "original_path": "components\\Header.jsx",
+      "relative_path": "components\\Header.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\Header.jsx",
+      "hash": "ab3b2c664bcef7c095709ece3bc6c13272a10311ec42580f7548cacc37867560",
+      "size": 3633
+    },
+    {
+      "original_path": "components\\MenuWithAvatar.jsx",
+      "relative_path": "components\\MenuWithAvatar.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\MenuWithAvatar.jsx",
+      "hash": "9db51f9e01bd133fa49cb5f81b6ef55215bf5a1e04a91861766240037174d950",
+      "size": 2101
+    },
+    {
+      "original_path": "components\\Notifier.jsx",
+      "relative_path": "components\\Notifier.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\Notifier.jsx",
+      "hash": "ba4d20badca4b84512f37b457dbc07f7c98aab26b1d4ca29b14dd60600f5103f",
+      "size": 1161
+    },
+    {
+      "original_path": "components\\SharedStyles.js",
+      "relative_path": "components\\SharedStyles.js",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\SharedStyles.js",
+      "hash": "7220589251e636d0840ac021ac1314dee8c224073652e21b345147af8c5495af",
+      "size": 401
+    },
+    {
+      "original_path": "components\\admin\\EditBook.jsx",
+      "relative_path": "components\\admin\\EditBook.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\admin\\EditBook.jsx",
+      "hash": "c2c60ff977119b20aa7a8554c89d42cf03b97846a71f254d73e09fb120cdba3a",
+      "size": 3674
+    },
+    {
+      "original_path": "components\\customer\\BuyButton.jsx",
+      "relative_path": "components\\customer\\BuyButton.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\components\\customer\\BuyButton.jsx",
+      "hash": "221a215331fff5eb28b1068f749a0f502957fecd48aa82e0edb2331527052e15",
+      "size": 3248
+    },
+    {
+      "original_path": "pages/_app.jsx",
+      "relative_path": "pages\\_app.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_app.jsx",
+      "hash": "d9e7d1841e83a6c14d94bd4f4120b79acb1146ae0dcc683fce8d56bfa0cc26e9",
+      "size": 2098
+    },
+    {
+      "original_path": "pages/_document.jsx",
+      "relative_path": "pages\\_document.jsx",
+      "backup_path": ".\\.agent_backups\\20250913_124549\\files\\pages\\_document.jsx",
+      "hash": "d1bf239dfe05bf610f4fc242381f2c97dcbfe0096e923dfc97cf3312e77e381f",
+      "size": 3877
+    }
+  ]
+}

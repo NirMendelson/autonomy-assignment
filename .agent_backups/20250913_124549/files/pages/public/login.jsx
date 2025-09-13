@@ -1,4 +1,4 @@
-import Head from {t({t('login.title')})};
+import Head from 'next/head';
 import { withRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
@@ -20,10 +20,10 @@ function Login({ router }) {
     <div style={{ textAlign: 'center', margin: '0 20px' }}>
       <Head>
         <title>Log in to Builder Book</title>
-        <meta name="description" content={t({t('page.description.loginPage')})} />
+        <meta name="description" content="Login page for builderbook.org" />
       </Head>
       <br />
-      <p style={{ margin: {t('login.title')}, fontSize: '44px', fontWeight: '400' }}>Log in</p>
+      <p style={{ margin: '45px auto', fontSize: '44px', fontWeight: '400' }}>Log in</p>
       <p>You’ll be logged in for 14 days unless you log out manually.</p>
       <br />
       <Button
@@ -33,7 +33,7 @@ function Login({ router }) {
       >
         <img
           src="https://builderbook-public.s3.amazonaws.com/G.svg"
-          alt={t({t('common.button.loginWithGoogle')})}
+          alt="Log in with Google"
           style={{ marginRight: '10px' }}
         />
         Log in with Google

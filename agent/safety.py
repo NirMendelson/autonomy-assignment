@@ -18,6 +18,16 @@ class SafetyValidator:
         """Determine if a string should be skipped and return reason if so."""
         text = context['text']
         
+        # Debug: Check if this is the Admin string
+        if text == 'Admin':
+            print(f"DEBUG: Safety check for 'Admin' - text: '{text}'")
+            print(f"DEBUG: Context: {context}")
+        
+        # Debug: Check if this is the Connect Github string
+        if text == 'Connect Github':
+            print(f"DEBUG: Safety check for 'Connect Github' - text: '{text}'")
+            print(f"DEBUG: Context: {context}")
+        
         # Skip empty or very short strings
         if len(text.strip()) < 2:
             return "Too short"
@@ -39,32 +49,76 @@ class SafetyValidator:
     
     def _is_technical_string(self, text: str, context: Dict[str, Any]) -> bool:
         """Check if string is technical (not user-facing)."""
+        # Debug: Check if this is the Admin string
+        if text == 'Admin':
+            print(f"DEBUG: Safety _is_technical_string for 'Admin' - text: '{text}'")
+        
         # URLs
         if text.startswith(('http://', 'https://', '//', 'www.')):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by URLs filter")
             return True
         
         # File paths
         if '/' in text and (text.endswith(('.js', '.jsx', '.css', '.png', '.jpg', '.svg'))):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by file paths filter")
             return True
         
         # CSS classes (kebab-case)
         if re.match(r'^[a-z][a-z0-9-]*$', text) and '-' in text:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS classes filter")
             return True
         
         # Data attributes
         if text.startswith('data-'):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by data attributes filter")
             return True
         
-        # IDs (camelCase or PascalCase)
-        if re.match(r'^[a-zA-Z][a-zA-Z0-9]*$', text) and len(text) > 3:
+        # IDs (camelCase only, not PascalCase UI text)
+        if re.match(r'^[a-z][a-zA-Z0-9]*$', text) and len(text) > 3:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by IDs filter")
             return True
         
         # Email addresses
         if '@' in text and '.' in text:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by email addresses filter")
             return True
         
         # Numbers only
         if text.isdigit():
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by numbers filter")
+            return True
+        
+        # CSS values - strings that start/end with spaces or are CSS keywords
+        text_stripped = text.strip()
+        css_values = {
+            'nowrap', 'wrap', 'pre', 'pre-wrap', 'pre-line', 'hidden', 'visible',
+            'block', 'inline', 'flex', 'grid', 'absolute', 'relative', 'fixed',
+            'static', 'sticky', 'left', 'right', 'center', 'justify', 'start',
+            'end', 'space-between', 'space-around', 'space-evenly', 'baseline',
+            'stretch', 'normal', 'bold', 'italic', 'underline', 'none', 'auto'
+        }
+        if text_stripped in css_values:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS values filter - text_stripped: '{text_stripped}'")
+            return True
+        
+        # CSS values with spaces (like " nowrap")
+        if text.startswith(' ') or text.endswith(' '):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS spaces filter")
+            return True
+        
+        # CSS measurements
+        if re.match(r'^\d+(px|em|rem|%|vh|vw|pt|pc|in|cm|mm)$', text_stripped):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS measurements filter")
             return True
         
         # Single words that are likely technical
@@ -77,9 +131,13 @@ class SafetyValidator:
             'from', 'as', 'default', 'async', 'await', 'yield',
             'typeof', 'instanceof', 'in', 'of', 'delete', 'void'
         }
-        if text.lower() in technical_words:
+        if text_stripped.lower() in technical_words:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by technical words filter - text_stripped: '{text_stripped}'")
             return True
         
+        if text == 'Admin':
+            print(f"DEBUG: Admin passed all safety technical string filters - returning False")
         return False
     
     def _is_non_ui_context(self, context: Dict[str, Any]) -> bool:
@@ -154,8 +212,14 @@ class SafetyValidator:
         ui_candidates = []
         
         for candidate in candidates:
+            # Debug: Check if this is the Admin string
+            if candidate.get('text') == 'Admin':
+                print(f"DEBUG: get_ui_priority_strings processing 'Admin'")
+            
             skip_reason = self.should_skip_string(candidate)
             if skip_reason:
+                if candidate.get('text') == 'Admin':
+                    print(f"DEBUG: Admin skipped by safety validator - reason: {skip_reason}")
                 candidate['skip_reason'] = skip_reason
                 continue
             

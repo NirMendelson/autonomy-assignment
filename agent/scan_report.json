@@ -1,0 +1,77 @@
+{
+  "components\\Header.jsx": [
+    {
+      "line": 13,
+      "text": "My books",
+      "tag": "object_property"
+    },
+    {
+      "line": 18,
+      "text": "Log out",
+      "tag": "object_property"
+    },
+    {
+      "line": 26,
+      "text": "Admin",
+      "tag": "object_property"
+    },
+    {
+      "line": 31,
+      "text": "Log out",
+      "tag": "object_property"
+    },
+    {
+      "line": 73,
+      "text": "Builder Book logo",
+      "tag": "Avatar"
+    },
+    {
+      "line": 83,
+      "text": "Connect Github",
+      "tag": "Button"
+    },
+    {
+      "line": 119,
+      "text": "Log in",
+      "tag": "Link"
+    }
+  ],
+  "pages\\public\\login.jsx": [
+    {
+      "line": 36,
+      "text": "Log in with Google",
+      "tag": "img"
+    },
+    {
+      "line": 38,
+      "text": "Log in with Google",
+      "tag": "Button"
+    }
+  ],
+  "pages\\admin\\book-detail.jsx": [
+    {
+      "line": 71,
+      "text": "Sync with Github",
+      "tag": "Button"
+    },
+    {
+      "line": 75,
+      "text": "Edit book",
+      "tag": "Button"
+    }
+  ],
+  "pages\\admin\\index.jsx": [
+    {
+      "line": 28,
+      "text": "Add book",
+      "tag": "Button"
+    }
+  ],
+  "components\\admin\\EditBook.jsx": [
+    {
+      "line": 127,
+      "text": "Save",
+      "tag": "Button"
+    }
+  ]
+}

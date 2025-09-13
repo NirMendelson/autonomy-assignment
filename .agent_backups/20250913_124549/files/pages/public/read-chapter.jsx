@@ -114,7 +114,7 @@ function ReadChapterFunctional({
       }
 
       if (checkoutCanceled) {
-        notify({t('notification.checkoutCanceled')});
+        notify('Checkout canceled');
       }
 
       if (error) {

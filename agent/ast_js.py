@@ -40,9 +40,24 @@ class JavaScriptASTParser:
         candidates = []
         
         def traverse(node, depth=0):
-            if node.type == 'string':
+            # Debug: Check for any node around line 84 (Connect Github)
+            if (hasattr(node, 'start_point') and 
+                node.start_point[0] + 1 == 84):
+                print(f"DEBUG: Line 84 node: type={node.type}, text='{node.text.decode('utf-8') if node.text else 'None'}'")
+            
+            # Debug: Check for Connect Github specifically
+            if (hasattr(node, 'text') and 
+                node.text and 
+                'Connect Github' in node.text.decode('utf-8')):
+                print(f"DEBUG: Found 'Connect Github': type={node.type}, line={node.start_point[0] + 1 if hasattr(node, 'start_point') else 'unknown'}")
+            
+            # Debug: Check all node types we're processing
+            if node.type == 'string' or node.type == 'jsx_text':
                 # Get the actual string content
-                text = node.text.decode('utf-8').strip('"\'`')
+                if node.type == 'string':
+                    text = node.text.decode('utf-8').strip('"\'`')
+                else:  # jsx_text
+                    text = node.text.decode('utf-8').strip()
                 
                 # Skip empty strings
                 if not text:
@@ -55,6 +70,19 @@ class JavaScriptASTParser:
                 # Get context information
                 parent = node.parent
                 grandparent = parent.parent if parent else None
+                
+                # Debug: Check if this is Connect Github before processing
+                if 'Connect Github' in text:
+                    print(f"DEBUG: Processing 'Connect Github' as {node.type} at line {node.start_point[0] + 1}")
+                    print(f"DEBUG: Raw text: '{node.text.decode('utf-8')}'")
+                    print(f"DEBUG: Stripped text: '{text}'")
+                
+                # Debug: Check if we found the Connect Github string
+                if text == 'Connect Github':
+                    print(f"DEBUG: Found 'Connect Github' {node.type} at line {node.start_point[0] + 1}")
+                    print(f"DEBUG: Connect Github text: '{text}'")
+                    print(f"DEBUG: Connect Github parent: {parent.type if parent else 'None'}")
+                    print(f"DEBUG: Connect Github grandparent: {grandparent.type if grandparent else 'None'}")
                 
                 context = {
                     'text': text,
@@ -72,7 +100,14 @@ class JavaScriptASTParser:
                     'is_array_element': self._is_array_element(node),
                     'is_button_text': self._is_button_text(node),
                     'is_link_text': self._is_link_text(node),
+                    'jsx_tag': self._get_jsx_tag(node),
                 }
+                
+                # Debug: Check if this is Connect Github after context building
+                if text == 'Connect Github':
+                    print(f"DEBUG: Connect Github context built: {context}")
+                    print(f"DEBUG: Connect Github is_jsx_text: {context['is_jsx_text']}")
+                    print(f"DEBUG: Connect Github is_button_text: {context['is_button_text']}")
                 
                 candidates.append(context)
             
@@ -90,7 +125,24 @@ class JavaScriptASTParser:
     
     def _is_jsx_text(self, node: tree_sitter.Node) -> bool:
         """Check if the string is JSX text content."""
-        return node.type == 'string' and self._has_jsx_parent(node)
+        if node.type != 'string':
+            return False
+        
+        # Check if this is direct text content inside JSX elements
+        current = node.parent
+        while current:
+            if current.type == 'jsx_element':
+                # Check if this is direct text content (not in attributes)
+                for child in current.children:
+                    if child.type == 'jsx_text' and child == node:
+                        return True
+            elif current.type == 'jsx_self_closing_element':
+                # Check if this is text content in self-closing elements
+                for child in current.children:
+                    if child.type == 'jsx_text' and child == node:
+                        return True
+            current = current.parent
+        return False
     
     def _has_jsx_parent(self, node: tree_sitter.Node) -> bool:
         """Check if any parent is a JSX element."""
@@ -119,7 +171,25 @@ class JavaScriptASTParser:
     def _is_object_property(self, node: tree_sitter.Node) -> bool:
         """Check if the string is a value in an object property."""
         parent = node.parent
-        return parent and parent.type == 'pair'
+        if not parent or parent.type != 'pair':
+            return False
+        
+        # Debug: Check what we're looking at
+        text = node.text.decode('utf-8')
+        if text == 'Admin':
+            print(f"DEBUG: Found 'Admin' string, parent type: {parent.type}")
+            print(f"DEBUG: Parent children: {[child.type for child in parent.children]}")
+            for child in parent.children:
+                if child.type == 'property_identifier':
+                    prop_name = child.text.decode('utf-8')
+                    print(f"DEBUG: Property name: '{prop_name}'")
+        
+        # Check if this is a UI-relevant property like 'text', 'label', 'title', etc.
+        for child in parent.children:
+            if child.type == 'property_identifier' and child.text.decode('utf-8') in ['text', 'label', 'title', 'alt', 'placeholder']:
+                return True
+        
+        return False
     
     def _is_array_element(self, node: tree_sitter.Node) -> bool:
         """Check if the string is an element in an array."""
@@ -137,6 +207,11 @@ class JavaScriptASTParser:
                         for grandchild in child.children:
                             if grandchild.type == 'identifier' and grandchild.text.decode('utf-8') == 'Button':
                                 return True
+            elif current.type == 'jsx_self_closing_element':
+                # Check if this is a Button component
+                for child in current.children:
+                    if child.type == 'identifier' and child.text.decode('utf-8') == 'Button':
+                        return True
             current = current.parent
         return False
     
@@ -151,8 +226,41 @@ class JavaScriptASTParser:
                         for grandchild in child.children:
                             if grandchild.type == 'identifier' and grandchild.text.decode('utf-8') == 'Link':
                                 return True
+            elif current.type == 'jsx_self_closing_element':
+                # Check if this is a Link component
+                for child in current.children:
+                    if child.type == 'identifier' and child.text.decode('utf-8') == 'Link':
+                        return True
             current = current.parent
         return False
+    
+    def _get_jsx_tag(self, node: tree_sitter.Node) -> str:
+        """Get the JSX tag name that contains this string."""
+        current = node.parent
+        while current:
+            if current.type == 'jsx_element':
+                # Find the opening tag
+                for child in current.children:
+                    if child.type == 'jsx_opening_element':
+                        for grandchild in child.children:
+                            if grandchild.type == 'identifier':
+                                return grandchild.text.decode('utf-8')
+            elif current.type == 'jsx_self_closing_element':
+                # Find the tag name
+                for child in current.children:
+                    if child.type == 'identifier':
+                        return child.text.decode('utf-8')
+            current = current.parent
+        
+        # Check if it's in an object property (like menu options)
+        if self._is_object_property(node):
+            return 'object_property'
+        
+        # Check if it's in an array
+        if self._is_array_element(node):
+            return 'array_element'
+        
+        return 'unknown'
     
     def get_code_context(self, tree: tree_sitter.Tree, node: tree_sitter.Node, file_content: str, lines_before: int = 3, lines_after: int = 3) -> str:
         """Get code context around a node for LLM analysis."""

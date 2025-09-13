@@ -1,4 +1,3 @@
-import '../i18n';
 import createCache from '@emotion/cache';
 import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';

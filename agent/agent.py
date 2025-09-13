@@ -103,6 +103,125 @@ class I18nAgent:
             'candidates': self.candidates
         }
     
+    def generate_scan_json(self) -> dict:
+        """Generate simple JSON report of strings to replace by file."""
+        if not self.candidates:
+            return {}
+        
+        # Filter out technical strings and focus on UI text
+        ui_candidates = []
+        for candidate in self.candidates:
+            text = candidate['text']
+            skip_reason = candidate.get('skip_reason', '')
+            
+            # Skip if already marked for skipping
+            if skip_reason:
+                continue
+            
+            # Skip technical strings
+            if self._is_technical_string(text):
+                continue
+            
+            # Only include likely UI strings
+            if (candidate.get('is_jsx_text', False) or 
+                candidate.get('is_button_text', False) or 
+                candidate.get('is_link_text', False) or
+                candidate.get('is_object_property', False) and len(text) > 3):
+                ui_candidates.append(candidate)
+            
+            # Debug: Check if Admin is being filtered out
+            if text == 'Admin':
+                print(f"DEBUG: Admin filtering - is_object_property: {candidate.get('is_object_property', False)}, len: {len(text)}")
+                print(f"DEBUG: Admin should be included: {candidate.get('is_object_property', False) and len(text) > 3}")
+        
+        # Group by file
+        file_groups = {}
+        for candidate in ui_candidates:
+            file_path = candidate['file_path']
+            rel_path = os.path.relpath(file_path, self.root_dir)
+            
+            if rel_path not in file_groups:
+                file_groups[rel_path] = []
+            
+            file_groups[rel_path].append({
+                'line': candidate['line'],
+                'text': candidate['text'],
+                'tag': candidate.get('jsx_tag', 'unknown')
+            })
+        
+        # Sort by line number within each file
+        for file_path in file_groups:
+            file_groups[file_path].sort(key=lambda x: x['line'])
+        
+        return file_groups
+    
+    def _is_technical_string(self, text: str) -> bool:
+        """Check if string is technical (not UI text)."""
+        text_stripped = text.strip()
+        
+        # Debug: Check if this is the Admin string
+        if text == 'Admin':
+            print(f"DEBUG: Technical string check for 'Admin' - text: '{text}'")
+            print(f"DEBUG: text_stripped: '{text_stripped}'")
+        
+        # Skip CSS values
+        if (text.startswith('#') or
+            text.endswith('px') or
+            text.endswith('em') or
+            text.endswith('%') or
+            'px' in text or
+            'em' in text or
+            'rem' in text):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS values filter")
+            return True
+
+        # Skip import paths
+        if ('@mui/' in text or
+            'next/' in text or
+            'react' in text or
+            text.startswith('./') or
+            text.startswith('../')):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by import paths filter")
+            return True
+
+        # Skip very short strings
+        if len(text_stripped) < 3:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by short strings filter - len: {len(text_stripped)}")
+            return True
+
+        # Skip CSS values with spaces (like " nowrap")
+        if text.startswith(' ') or text.endswith(' '):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS spaces filter")
+            return True
+
+        # Skip CSS keywords
+        css_values = {
+            'nowrap', 'wrap', 'pre', 'pre-wrap', 'pre-line', 'hidden', 'visible',
+            'block', 'inline', 'flex', 'grid', 'absolute', 'relative', 'fixed',
+            'static', 'sticky', 'left', 'right', 'center', 'justify', 'start',
+            'end', 'space-between', 'space-around', 'space-evenly', 'baseline',
+            'stretch', 'normal', 'bold', 'italic', 'underline', 'none', 'auto'
+        }
+        if text_stripped in css_values:
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS keywords filter - text_stripped: '{text_stripped}'")
+            return True
+
+        # Skip CSS measurements
+        import re
+        if re.match(r'^\d+(px|em|rem|%|vh|vw|pt|pc|in|cm|mm)$', text_stripped):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS measurements filter")
+            return True
+
+        if text == 'Admin':
+            print(f"DEBUG: Admin passed all technical string filters - returning False")
+        return False
+    
     def classify(self) -> dict:
         """Classify string candidates using LLM."""
         if not self.candidates:
@@ -321,13 +440,14 @@ class I18nAgent:
 @click.option('--root', default='.', help='Project root directory')
 @click.option('--config', help='Config file path')
 @click.option('--scan', is_flag=True, help='Scan files for string candidates')
+@click.option('--scan-json', is_flag=True, help='Scan files and output JSON report')
 @click.option('--classify', is_flag=True, help='Classify candidates with LLM')
 @click.option('--apply', is_flag=True, help='Apply i18n transformations')
 @click.option('--backup', is_flag=True, help='Create backup of frontend files')
 @click.option('--restore', is_flag=True, help='Restore frontend files from backup')
 @click.option('--report', is_flag=True, help='Generate report')
 @click.option('--backup-id', help='Specific backup ID to restore')
-def main(root, config, scan, classify, apply, backup, restore, report, backup_id):
+def main(root, config, scan, scan_json, classify, apply, backup, restore, report, backup_id):
     """i18n Agent - Automatically add internationalization to React apps."""
     
     # Initialize agent
@@ -336,6 +456,31 @@ def main(root, config, scan, classify, apply, backup, restore, report, backup_id
     # Execute commands
     if scan:
         agent.scan()
+    
+    if scan_json:
+        agent.scan()
+        json_report = agent.generate_scan_json()
+        import json
+        
+        # Save JSON to file
+        json_file = os.path.join(root, 'agent', 'scan_report.json')
+        os.makedirs(os.path.dirname(json_file), exist_ok=True)
+        
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(json_report, f, indent=2, ensure_ascii=False)
+        
+        console.print(f"[green]Scan report saved to: {json_file}[/green]")
+        console.print(f"[blue]Found {len(json_report)} files with UI strings to replace[/blue]")
+        
+        # Show summary
+        total_strings = sum(len(strings) for strings in json_report.values())
+        console.print(f"[blue]Total UI strings found: {total_strings}[/blue]")
+        
+        # Show file summary
+        for file_path, strings in json_report.items():
+            console.print(f"[cyan]{file_path}: {len(strings)} strings[/cyan]")
+            for item in strings:
+                console.print(f"  Line {item['line']} ({item['tag']}): \"{item['text']}\"")
     
     if classify:
         agent.classify()
@@ -353,7 +498,7 @@ def main(root, config, scan, classify, apply, backup, restore, report, backup_id
         agent.report()
     
     # If no flags provided, show help
-    if not any([scan, classify, apply, backup, restore, report]):
+    if not any([scan, scan_json, classify, apply, backup, restore, report]):
         console.print("[yellow]No action specified. Use --help to see available options.[/yellow]")
 
 

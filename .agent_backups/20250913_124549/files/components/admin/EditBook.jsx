@@ -45,17 +45,17 @@ class EditBook extends React.Component {
     const { name, price, githubRepo } = this.state.book;
 
     if (!name) {
-      notify({t({t('error.validation.required.name')})});
+      notify('Name is required');
       return;
     }
 
     if (!price) {
-      notify({t({t('error.validation.required.price')})});
+      notify('Price is required');
       return;
     }
 
     if (!githubRepo) {
-      notify({t({t('error.validation.required.githubRepo')})});
+      notify('Github repo is required');
       return;
     }
 
@@ -77,7 +77,7 @@ class EditBook extends React.Component {
               }}
               value={this.state.book.name}
               type="text"
-              label={t({t('form.label.bookTitle')})}
+              label="Book's title"
               style={styleTextField}
             />
           </div>
@@ -92,7 +92,7 @@ class EditBook extends React.Component {
             }}
             value={this.state.book.price}
             type="number"
-            label={t({t('form.label.bookPrice')})}
+            label="Book's price"
             className="textFieldInput"
             style={styleTextField}
             step="1"

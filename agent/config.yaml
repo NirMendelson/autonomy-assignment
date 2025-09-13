@@ -24,7 +24,6 @@ skip_patterns:
   - "^[0-9]+$"  # Numbers only
   - "^[a-z-]+$"  # CSS classes
   - "^data-[a-z-]+$"  # Data attributes
-  - "^[A-Z][a-zA-Z]*$"  # PascalCase (likely component names)
 
 # i18n configuration
 i18n:
