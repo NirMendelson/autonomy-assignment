@@ -127,7 +127,10 @@ class I18nAgent:
                 candidate.get('is_button_text', False) or 
                 candidate.get('is_link_text', False) or
                 candidate.get('is_function_call_text', False) or
-                candidate.get('is_object_property', False) and len(text) > 3):
+                candidate.get('is_object_property', False) and len(text) > 3 or
+                candidate.get('node_type') == 'jsx_attribute' or
+                candidate.get('is_template_string', False) or
+                candidate.get('node_type') == 'string_fragment'):
                 ui_candidates.append(candidate)
             
             # Debug: Check if Admin is being filtered out

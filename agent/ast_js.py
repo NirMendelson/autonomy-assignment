@@ -40,6 +40,44 @@ class JavaScriptASTParser:
         candidates = []
         
         def traverse(node, depth=0):
+            # Debug: Check for JSX attributes specifically
+            if node.type == 'jsx_attribute':
+                print(f"DEBUG: Found JSX attribute at line {node.start_point[0] + 1}")
+                # Check if this attribute has a string value
+                for child in node.children:
+                    if child.type == 'string':
+                        attr_value = child.text.decode('utf-8').strip('"\'`')
+                        print(f"DEBUG: JSX attribute value: '{attr_value}' at line {node.start_point[0] + 1}")
+                        
+                        # Check if this is a label attribute
+                        for attr_child in node.children:
+                            if attr_child.type == 'property_identifier':
+                                attr_name = attr_child.text.decode('utf-8')
+                                print(f"DEBUG: JSX attribute name: '{attr_name}' = '{attr_value}'")
+                                
+                                if attr_name == 'label' and attr_value in ['Book\'s title', 'Book\'s price']:
+                                    print(f"DEBUG: FOUND MISSING LABEL: '{attr_value}' at line {node.start_point[0] + 1}")
+            
+            # Debug: Check for TextField components
+            if node.type == 'jsx_element':
+                # Check if this is a TextField
+                for child in node.children:
+                    if child.type == 'jsx_opening_element':
+                        for grandchild in child.children:
+                            if grandchild.type == 'identifier' and grandchild.text.decode('utf-8') == 'TextField':
+                                print(f"DEBUG: Found TextField at line {node.start_point[0] + 1}")
+                                
+                                # Check for label attribute in this TextField
+                                for attr in child.children:
+                                    if attr.type == 'jsx_attribute':
+                                        for attr_child in attr.children:
+                                            if attr_child.type == 'property_identifier' and attr_child.text.decode('utf-8') == 'label':
+                                                # Find the string value
+                                                for value_child in attr.children:
+                                                    if value_child.type == 'string':
+                                                        label_value = value_child.text.decode('utf-8').strip('"\'`')
+                                                        print(f"DEBUG: TextField label found: '{label_value}' at line {node.start_point[0] + 1}")
+            
             # Debug: Check for any node around line 84 (Connect Github)
             if (hasattr(node, 'start_point') and 
                 node.start_point[0] + 1 == 84):
@@ -64,10 +102,14 @@ class JavaScriptASTParser:
                 print(f"DEBUG: Found 'Synced': type={node.type}, line={node.start_point[0] + 1 if hasattr(node, 'start_point') else 'unknown'}")
             
             # Debug: Check all node types we're processing
-            if node.type == 'string' or node.type == 'jsx_text':
+            if node.type == 'string' or node.type == 'jsx_text' or node.type == 'template_string' or node.type == 'string_fragment':
                 # Get the actual string content
                 if node.type == 'string':
                     text = node.text.decode('utf-8').strip('"\'`')
+                elif node.type == 'template_string':
+                    text = node.text.decode('utf-8').strip('`')
+                elif node.type == 'string_fragment':
+                    text = node.text.decode('utf-8').strip()
                 else:  # jsx_text
                     text = node.text.decode('utf-8').strip()
                 
@@ -132,6 +174,7 @@ class JavaScriptASTParser:
                     'is_button_text': self._is_button_text(node),
                     'is_link_text': self._is_link_text(node),
                     'is_function_call_text': self._is_function_call_text(node),
+                    'is_template_string': node.type == 'template_string',
                     'jsx_tag': self._get_jsx_tag(node),
                 }
                 
@@ -162,7 +205,57 @@ class JavaScriptASTParser:
                 traverse(child, depth + 1)
         
         traverse(tree.root_node)
+        
+        # Also find JSX attributes that might be missed
+        jsx_attrs = self.find_jsx_attributes(tree, file_path, content)
+        print(f"DEBUG: Found {len(jsx_attrs)} JSX attributes in {file_path}")
+        
+        # Add JSX attributes directly to candidates (they're already properly formatted)
+        for jsx_attr in jsx_attrs:
+            print(f"DEBUG: Adding JSX attribute to candidates: '{jsx_attr['text']}' at line {jsx_attr['line']}")
+            print(f"DEBUG: JSX attribute context: {jsx_attr}")
+            candidates.append(jsx_attr)
+        
         return candidates
+    
+    def find_jsx_attributes(self, tree: tree_sitter.Tree, file_path: str, content: str) -> List[Dict[str, Any]]:
+        """Find JSX attribute values that might be missed."""
+        jsx_attributes = []
+        
+        def traverse(node, depth=0):
+            if node.type == 'jsx_attribute':
+                # Get attribute name and value
+                attr_name = None
+                attr_value = None
+                
+                for child in node.children:
+                    if child.type == 'property_identifier':
+                        attr_name = child.text.decode('utf-8')
+                    elif child.type == 'string':
+                        attr_value = child.text.decode('utf-8').strip('"\'`')
+                
+                if attr_name and attr_value:
+                    print(f"DEBUG: JSX attribute: {attr_name}='{attr_value}' at line {node.start_point[0] + 1}")
+                    
+                    # Check if this is a UI-relevant attribute
+                    if attr_name in ['label', 'alt', 'title', 'placeholder', 'aria-label']:
+                        jsx_attributes.append({
+                            'text': attr_value,
+                            'file_path': file_path,
+                            'line': node.start_point[0] + 1,
+                            'column': node.start_point[1] + 1,
+                            'node_type': 'jsx_attribute',
+                            'parent_type': 'jsx_element',
+                            'attribute_name': attr_name,
+                            'jsx_tag': 'unknown'  # We'll determine this later
+                        })
+            
+            # Recursively traverse children
+            for child in node.children:
+                traverse(child, depth + 1)
+        
+        traverse(tree.root_node)
+        return jsx_attributes
     
     def _is_jsx_attribute(self, node: tree_sitter.Node) -> bool:
         """Check if the string is a JSX attribute value."""
@@ -282,7 +375,7 @@ class JavaScriptASTParser:
     
     def _is_function_call_text(self, node: tree_sitter.Node) -> bool:
         """Check if the string is text inside a function call (like notify('Synced'))."""
-        if node.type != 'string':
+        if node.type != 'string' and node.type != 'template_string' and node.type != 'string_fragment':
             return False
         
         # Check if parent is arguments and grandparent is call_expression

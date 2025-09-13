@@ -80,6 +80,14 @@ class SafetyValidator:
                 print(f"DEBUG: Log in to Builder Book caught by URLs filter")
             return True
         
+        # URL patterns with template literals
+        if ('${' in text and ('/' in text or '?' in text or '=' in text)):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by URL patterns filter")
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by URL patterns filter")
+            return True
+        
         # File paths
         if '/' in text and (text.endswith(('.js', '.jsx', '.css', '.png', '.jpg', '.svg'))):
             if text == 'Admin':
@@ -92,6 +100,14 @@ class SafetyValidator:
         if re.match(r'^[a-z][a-z0-9-]*$', text) and '-' in text:
             if text == 'Admin':
                 print(f"DEBUG: Admin caught by CSS classes filter")
+            return True
+        
+        # CSS class patterns with template literals
+        if ('${' in text and ('style' in text.lower() or 'class' in text.lower() or 'key' in text.lower())):
+            if text == 'Admin':
+                print(f"DEBUG: Admin caught by CSS class patterns filter")
+            if text == 'Log in to Builder Book':
+                print(f"DEBUG: Log in to Builder Book caught by CSS class patterns filter")
             return True
         
         # Data attributes
@@ -269,12 +285,19 @@ class SafetyValidator:
                 print(f"DEBUG: get_ui_priority_strings processing 'Log in to Builder Book'")
                 print(f"DEBUG: Log in to Builder Book candidate: {candidate}")
             
+            # Debug: Check if this is a JSX attribute
+            if candidate.get('node_type') == 'jsx_attribute':
+                print(f"DEBUG: get_ui_priority_strings processing JSX attribute: '{candidate.get('text')}'")
+                print(f"DEBUG: JSX attribute candidate: {candidate}")
+            
             skip_reason = self.should_skip_string(candidate)
             if skip_reason:
                 if candidate.get('text') == 'Admin':
                     print(f"DEBUG: Admin skipped by safety validator - reason: {skip_reason}")
                 if candidate.get('text') == 'Log in to Builder Book':
                     print(f"DEBUG: Log in to Builder Book skipped by safety validator - reason: {skip_reason}")
+                if candidate.get('node_type') == 'jsx_attribute':
+                    print(f"DEBUG: JSX attribute '{candidate.get('text')}' skipped by safety validator - reason: {skip_reason}")
                 candidate['skip_reason'] = skip_reason
                 continue
             
