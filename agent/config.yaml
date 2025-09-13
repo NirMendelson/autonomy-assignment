@@ -1,0 +1,35 @@
+# i18n Agent Configuration
+
+# Files to include in scanning
+include_patterns:
+  - "pages/**/*.jsx"
+  - "components/**/*.jsx"
+
+# Files to exclude from scanning
+exclude_patterns:
+  - "node_modules/**"
+  - ".git/**"
+  - "server/**"
+  - "lib/api/**"
+  - "models/**"
+  - "test/**"
+  - "*.test.js"
+  - "*.test.jsx"
+
+# String patterns to skip (non-UI strings)
+skip_patterns:
+  - "^https?://"  # URLs
+  - "^/[a-zA-Z]"  # Routes
+  - "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"  # Emails
+  - "^[0-9]+$"  # Numbers only
+  - "^[a-z-]+$"  # CSS classes
+  - "^data-[a-z-]+$"  # Data attributes
+  - "^[A-Z][a-zA-Z]*$"  # PascalCase (likely component names)
+
+# i18n configuration
+i18n:
+  default_locale: "en"
+  locales: ["en", "he"]
+  namespace: "common"
+  interpolation_prefix: "{{"
+  interpolation_suffix: "}}"
