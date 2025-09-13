@@ -186,6 +186,10 @@ export default LanguageSwitcher;
         raw = tr["text"]
         key = tr["key"]
         esc = re.escape(raw)
+        
+        # DEBUG: Show what we're transforming
+        print(f"    DEBUG: Transforming line: '{line}'")
+        print(f"    DEBUG: Looking for: '{raw}' -> t('{key}')")
 
         # 1) JSX text node
         new_line = re.sub(
@@ -194,7 +198,12 @@ export default LanguageSwitcher;
             line,
         )
         if new_line != line:
+            print(f"    DEBUG: Pattern 1 (JSX text) matched: '{line}' -> '{new_line}'")
             return new_line
+        else:
+            print(f"    DEBUG: Pattern 1 (JSX text) did NOT match: '{line}'")
+            print(f"    DEBUG: Looking for pattern: (>)(\\s*){esc}(\\s*)(<)")
+            print(f"    DEBUG: Escaped text: {esc}")
 
         # 2) JSX expression with quotes {'Text'} / {"Text"} / {`Text`}
         new_line = re.sub(
@@ -203,6 +212,7 @@ export default LanguageSwitcher;
             line,
         )
         if new_line != line:
+            print(f"    DEBUG: Pattern 2 (JSX expr) matched: '{line}' -> '{new_line}'")
             return new_line
 
         # 3) JSX attribute value
@@ -212,6 +222,7 @@ export default LanguageSwitcher;
             line,
         )
         if new_line != line:
+            print(f"    DEBUG: Pattern 3 (JSX attr) matched: '{line}' -> '{new_line}'")
             return new_line
 
         # 4) Plain JS string literal fallback
@@ -220,6 +231,20 @@ export default LanguageSwitcher;
             rf"t(\"{key}\")",
             line,
         )
+        if new_line != line:
+            print(f"    DEBUG: Pattern 4 (JS string) matched: '{line}' -> '{new_line}'")
+            return new_line
+        
+        # 5) Standalone JSX text content (not between tags)
+        new_line = re.sub(
+            rf"^(\s*){esc}(\s*)$",
+            rf"\1{{t(\"{key}\")}}\2",
+            line,
+        )
+        if new_line != line:
+            print(f"    DEBUG: Pattern 5 (standalone JSX text) matched: '{line}' -> '{new_line}'")
+            return new_line
+        
         return new_line
 
     # ---------- Fixers: imports and hooks ----------
