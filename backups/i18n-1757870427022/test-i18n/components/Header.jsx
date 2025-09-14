@@ -1,3 +1,4 @@
+```jsx
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Toolbar from '@mui/material/Toolbar';
@@ -97,14 +98,14 @@ function Header({ user, hideHeader, redirectUrl }) {
                   <MenuWithAvatar
                     options={optionsMenuCustomer}
                     src={user.avatarUrl}
-                    alt={user.displayName}
+                    alt={t('alt.user_display_name')}
                   />
                 ) : null}
                 {user.isAdmin ? (
                   <MenuWithAvatar
                     options={optionsMenuAdmin}
                     src={user.avatarUrl}
-                    alt={user.displayName}
+                    alt={t('alt.user_display_name')}
                   />
                 ) : null}
               </div>
@@ -134,3 +135,4 @@ Header.propTypes = propTypes;
 Header.defaultProps = defaultProps;
 
 export default Header;
+```

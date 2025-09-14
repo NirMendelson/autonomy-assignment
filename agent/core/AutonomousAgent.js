@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk');
 
 // Import core components
@@ -13,6 +14,7 @@ const OrganizeTool = require('../tools/OrganizeTool');
 const TransformTool = require('../tools/TransformTool');
 const TranslateTool = require('../tools/TranslateTool');
 const LocaleTool = require('../tools/LocaleTool');
+const SetupTool = require('../tools/SetupTool');
 const ValidateTool = require('../tools/ValidateTool');
 const TestTool = require('../tools/TestTool');
 const ReportTool = require('../tools/ReportTool');
@@ -38,6 +40,7 @@ class AutonomousAgent {
       transform: new TransformTool(this),
       translate: new TranslateTool(this),
       locale: new LocaleTool(this),
+      setup: new SetupTool(this),
       validate: new ValidateTool(this),
       test: new TestTool(this),
       report: new ReportTool(this),
@@ -82,6 +85,9 @@ class AutonomousAgent {
 
   async initialize() {
     console.log('🔧 Initializing agent...');
+    
+    // Set backup directory
+    this.backupDir = path.join(process.cwd(), 'backups', `i18n-${Date.now()}`);
     
     // Set target language
     this.stateManager.updateState({
@@ -178,6 +184,9 @@ class AutonomousAgent {
         case 'locale':
           return await this.executeLocale();
         
+        case 'setup':
+          return await this.executeSetup();
+        
         case 'validate':
           return await this.executeValidate();
         
@@ -249,6 +258,14 @@ class AutonomousAgent {
     const result = await this.tools.locale.execute();
     this.stateManager.updateState({ localeResults: result });
     this.stateManager.addCompletedTask('locale');
+    return result;
+  }
+
+  async executeSetup() {
+    this.stateManager.setPhase('setup');
+    const result = await this.tools.setup.execute();
+    this.stateManager.updateState({ setupResults: result });
+    this.stateManager.addCompletedTask('setup');
     return result;
   }
 

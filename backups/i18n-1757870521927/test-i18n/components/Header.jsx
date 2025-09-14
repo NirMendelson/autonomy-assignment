@@ -1,3 +1,4 @@
+```jsx
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Toolbar from '@mui/material/Toolbar';
@@ -134,3 +135,4 @@ Header.propTypes = propTypes;
 Header.defaultProps = defaultProps;
 
 export default Header;
+```

@@ -1,4 +1,8 @@
 {
-  "attr.httpsstoragegoogleapiscombuild": "https",
-  "attr.builder_book_logo": "Logo de Builder Book"
+  "menu.my_books": "Mis libros",
+  "button.logout": "Cerrar sesión",
+  "menu.admin": "Administrador",
+  "button.connect_github": "Conectar Github",
+  "alt.logo": "Logo de Builder Book",
+  "link.login": "Iniciar sesión"
 }

@@ -23,7 +23,11 @@ class TranslateTool extends BaseTool {
     
     if (allStrings.length > 0) {
       this.log(`  📝 Found ${allStrings.length} strings to translate`);
+      this.log(`  📝 Strings: ${allStrings.map(s => s.text).join(', ')}`);
+      
       const translations = await this.translateStrings(allStrings, targetLanguage);
+      
+      this.log(`  📥 Translation completed: ${translations.length} translations`);
       results.translations = translations;
       results.stringsTranslated = translations.length;
     } else {
@@ -33,10 +37,18 @@ class TranslateTool extends BaseTool {
     // Store results in agent state
     this.agent.stateManager.updateContext({ translateResults: results });
     
+    // Update phase to indicate translations are complete
+    if (results.stringsTranslated > 0) {
+      this.agent.stateManager.updateState({ phase: 'translating_complete' });
+      this.log(`  ✅ Translation phase complete - ${results.stringsTranslated} strings translated`);
+    }
+    
     return results;
   }
   
   async translateStrings(strings, targetLanguage) {
+    this.log(`  🤖 Calling Claude to translate ${strings.length} strings to ${targetLanguage}...`);
+    
     const prompt = `You are a professional translator specializing in software localization.
 
 TASK: Translate the following strings from English to ${this.getLanguageName(targetLanguage)}.
@@ -59,9 +71,17 @@ key: "translated_text"
 key: "translated_text"
 ...`;
 
+    this.log(`  📝 Prompt length: ${prompt.length} characters`);
+
     try {
       const response = await this.askClaude(prompt, 4000);
-      return this.parseTranslations(response, strings);
+      this.log(`  📥 Claude response received: ${response.length} characters`);
+      this.log(`  📄 Response preview: ${response.substring(0, 200)}...`);
+      
+      const translations = this.parseTranslations(response, strings);
+      this.log(`  ✅ Parsed ${translations.length} translations`);
+      
+      return translations;
     } catch (error) {
       this.error(`Translation failed: ${error.message}`);
       return strings.map(s => ({ ...s, translation: s.text })); // Fallback to original

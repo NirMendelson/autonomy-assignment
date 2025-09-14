@@ -1,3 +1,4 @@
+```jsx
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Toolbar from '@mui/material/Toolbar';
@@ -36,7 +37,7 @@ function Header({ user, hideHeader, redirectUrl }) {
       as: '/my-books',
     },
     {
-      text: t('button.logout'),
+      text: t('menu.log_out'),
       href: '/logout',
       anchor: true,
     },
@@ -49,7 +50,7 @@ function Header({ user, hideHeader, redirectUrl }) {
       as: '/admin',
     },
     {
-      text: t('button.logout'),
+      text: t('menu.log_out'),
       href: '/logout',
       anchor: true,
     },
@@ -120,7 +121,7 @@ function Header({ user, hideHeader, redirectUrl }) {
                 }}
                 style={{ margin: '0px 20px 0px auto' }}
               >
-                {t('link.login')}
+                {t('link.log_in')}
               </Link>
             )}
           </Grid>
@@ -134,3 +135,4 @@ Header.propTypes = propTypes;
 Header.defaultProps = defaultProps;
 
 export default Header;
+```
