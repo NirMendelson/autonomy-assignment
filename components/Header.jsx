@@ -5,34 +5,10 @@ import Grid from '@mui/material/Grid';
 import Hidden from '@mui/material/Hidden';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 import MenuWithAvatar from './MenuWithAvatar';
-
-const optionsMenuCustomer = [
-  {
-    text: 'My books',
-    href: '/customer/my-books',
-    as: '/my-books',
-  },
-  {
-    text: 'Log out',
-    href: '/logout',
-    anchor: true,
-  },
-];
-
-const optionsMenuAdmin = [
-  {
-    text: 'Admin',
-    href: '/admin',
-    as: '/admin',
-  },
-  {
-    text: 'Log out',
-    href: '/logout',
-    anchor: true,
-  },
-];
 
 const propTypes = {
   user: PropTypes.shape({
@@ -52,6 +28,34 @@ const defaultProps = {
 };
 
 function Header({ user, hideHeader, redirectUrl }) {
+  const { t } = useTranslation();
+
+  const optionsMenuCustomer = [
+    {
+      text: t('menu.my_books'),
+      href: '/customer/my-books',
+      as: '/my-books',
+    },
+    {
+      text: t('menu.log_out'),
+      href: '/logout',
+      anchor: true,
+    },
+  ];
+
+  const optionsMenuAdmin = [
+    {
+      text: t('menu.admin'),
+      href: '/admin',
+      as: '/admin',
+    },
+    {
+      text: t('menu.log_out'),
+      href: '/logout',
+      anchor: true,
+    },
+  ];
+
   return (
     <div
       style={{
@@ -64,13 +68,14 @@ function Header({ user, hideHeader, redirectUrl }) {
       }}
     >
       <Toolbar>
+          <LanguageSwitcher />
         <Grid container direction="row" justifyContent="space-around" alignItems="center">
           <Grid item sm={8} xs={7} style={{ textAlign: 'left' }}>
             {user ? null : (
               <Link href="/">
                 <Avatar
                   src="https://storage.googleapis.com/builderbook/logo.svg"
-                  alt="Builder Book logo"
+                  alt={t('alt.logo')}
                   style={{ margin: '0px auto 0px 20px', cursor: 'pointer' }}
                 />
               </Link>
@@ -81,7 +86,7 @@ function Header({ user, hideHeader, redirectUrl }) {
               <Hidden mdDown>
                 <a href="/auth/github">
                   <Button variant="contained" color="primary">
-                    Connect Github
+                    {t('button.connect_github')}
                   </Button>
                 </a>
               </Hidden>
@@ -117,7 +122,7 @@ function Header({ user, hideHeader, redirectUrl }) {
                 }}
                 style={{ margin: '0px 20px 0px auto' }}
               >
-                Log in
+                {t('link.log_in')}
               </Link>
             )}
           </Grid>

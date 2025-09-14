@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import PropTypes from 'prop-types';
 import Error from 'next/error';
@@ -31,6 +32,7 @@ function ReadChapterFunctional({
   checkoutCanceled,
   error,
 }) {
+  const { t } = useTranslation();
   const [showTOC, setShowTOC] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -114,11 +116,11 @@ function ReadChapterFunctional({
       }
 
       if (checkoutCanceled) {
-        notify('Checkout canceled');
+        notify(t('notification.checkout_canceled'));
       }
 
       if (error) {
-        notify(error);
+        notify(t('notification.error'));
       }
 
       mounted.current = true;
@@ -163,7 +165,7 @@ function ReadChapterFunctional({
     return (
       <div style={{ padding }} id="chapter-content">
         <h2 style={{ fontWeight: '400', lineHeight: '1.5em' }}>
-          {chapterInsideState.order > 1 ? `Chapter ${chapterInsideState.order - 1}: ` : null}
+          {chapterInsideState.order > 1 ? `${t('label.chapter')} ${chapterInsideState.order - 1}: ` : null}
           {chapterInsideState.title}
         </h2>
         {!chapterInsideState.isPurchased && !chapterInsideState.isFree ? (
@@ -267,8 +269,8 @@ function ReadChapterFunctional({
       <Head>
         <title>
           {chapterInsideState.title === 'Introduction'
-            ? 'Introduction'
-            : `Chapter ${chapterInsideState.order - 1}. ${chapterInsideState.title}`}
+            ? t('title.introduction')
+            : `${t('title.chapter')} ${chapterInsideState.order - 1}. ${chapterInsideState.title}`}
         </title>
         {chapterInsideState.seoDescription ? (
           <meta name="description" content={chapterInsideState.seoDescription} />

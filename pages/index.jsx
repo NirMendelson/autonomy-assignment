@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
+import { useTranslation } from 'react-i18next';
 
 import withAuth from '../lib/withAuth';
 
@@ -18,15 +19,15 @@ const defaultProps = {
 // eslint-disable-next-line react/prefer-stateless-function
 class Index extends React.Component {
   render() {
-    const { user } = this.props;
+    const { user, t } = this.props;
     return (
       <div style={{ padding: '10px 45px' }}>
         <Head>
-          <title>Settings</title>
-          <meta name="description" content="List of purchased books." />
+          <title>{t('title.settings')}</title>
+          <meta name="description" content={t('meta.description')} />
         </Head>
-        <p>List of purchased books</p>
-        <p>Email:&nbsp;{user.email}</p>
+        <p>{t('visible.list_of_purchased_books')}</p>
+        <p>{t('label.email')}&nbsp;{user.email}</p>
       </div>
     );
   }
@@ -35,4 +36,9 @@ class Index extends React.Component {
 Index.propTypes = propTypes;
 Index.defaultProps = defaultProps;
 
-export default withAuth(Index);
+const IndexWithTranslation = (props) => {
+  const { t } = useTranslation();
+  return <Index {...props} t={t} />;
+};
+
+export default withAuth(IndexWithTranslation);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 import Button from '@mui/material/Button';
 import { loadStripe } from '@stripe/stripe-js';
+import { useTranslation } from 'next-i18next';
 
 import { fetchCheckoutSessionApiMethod } from '../../lib/api/customer';
 
@@ -43,15 +44,17 @@ const defaultProps = {
   redirectToCheckout: false,
 };
 
-class BuyButton extends React.Component {
-  componentDidMount() {
-    if (this.props.redirectToCheckout) {
-      this.handleCheckoutClick();
-    }
-  }
+function BuyButton(props) {
+  const { t } = useTranslation();
 
-  onLoginClicked = () => {
-    const { user } = this.props;
+  React.useEffect(() => {
+    if (props.redirectToCheckout) {
+      handleCheckoutClick();
+    }
+  }, [props.redirectToCheckout]);
+
+  const onLoginClicked = () => {
+    const { user } = props;
 
     if (!user) {
       const redirectUrl = `${window.location.pathname}?buy=1`;
@@ -59,11 +62,11 @@ class BuyButton extends React.Component {
     }
   };
 
-  handleCheckoutClick = async () => {
+  const handleCheckoutClick = async () => {
     NProgress.start();
 
     try {
-      const { book } = this.props;
+      const { book } = props;
       const { sessionId } = await fetchCheckoutSessionApiMethod({
         bookId: book._id,
         redirectUrl: document.location.pathname,
@@ -83,44 +86,42 @@ class BuyButton extends React.Component {
     }
   };
 
-  render() {
-    const { book, user } = this.props;
+  const { book, user } = props;
 
-    if (!book) {
-      return null;
-    }
+  if (!book) {
+    return null;
+  }
 
-    if (!user) {
-      return (
-        <div>
-          <Button
-            variant="contained"
-            color="primary"
-            style={styleBuyButton}
-            onClick={this.onLoginClicked}
-          >
-            {`Buy book for $${book.price}`}
-          </Button>
-          <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
-          <hr />
-        </div>
-      );
-    }
+  if (!user) {
     return (
       <div>
         <Button
           variant="contained"
           color="primary"
           style={styleBuyButton}
-          onClick={this.handleCheckoutClick}
+          onClick={onLoginClicked}
         >
-          {`Buy book for $${book.price}`}
+          {`${t('button.buy_book')} $${book.price}`}
         </Button>
-        <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
+        <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{t('textNearButton')}</p>
         <hr />
       </div>
     );
   }
+  return (
+    <div>
+      <Button
+        variant="contained"
+        color="primary"
+        style={styleBuyButton}
+        onClick={handleCheckoutClick}
+      >
+        {`${t('button.buy_book')} $${book.price}`}
+      </Button>
+      <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{t('textNearButton')}</p>
+      <hr />
+    </div>
+  );
 }
 
 BuyButton.propTypes = propTypes;

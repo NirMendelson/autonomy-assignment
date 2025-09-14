@@ -15,6 +15,7 @@ const TransformTool = require('../tools/TransformTool');
 const TranslateTool = require('../tools/TranslateTool');
 const LocaleTool = require('../tools/LocaleTool');
 const SetupTool = require('../tools/SetupTool');
+const IntegrateTool = require('../tools/IntegrateTool');
 const ValidateTool = require('../tools/ValidateTool');
 const TestTool = require('../tools/TestTool');
 const ReportTool = require('../tools/ReportTool');
@@ -41,6 +42,7 @@ class AutonomousAgent {
       translate: new TranslateTool(this),
       locale: new LocaleTool(this),
       setup: new SetupTool(this),
+      integrate: new IntegrateTool(this),
       validate: new ValidateTool(this),
       test: new TestTool(this),
       report: new ReportTool(this),
@@ -187,6 +189,9 @@ class AutonomousAgent {
         case 'setup':
           return await this.executeSetup();
         
+        case 'integrate':
+          return await this.executeIntegrate();
+        
         case 'validate':
           return await this.executeValidate();
         
@@ -266,6 +271,14 @@ class AutonomousAgent {
     const result = await this.tools.setup.execute();
     this.stateManager.updateState({ setupResults: result });
     this.stateManager.addCompletedTask('setup');
+    return result;
+  }
+
+  async executeIntegrate() {
+    this.stateManager.setPhase('integration');
+    const result = await this.tools.integrate.execute();
+    this.stateManager.updateState({ integrateResults: result });
+    this.stateManager.addCompletedTask('integrate');
     return result;
   }
 

@@ -14,6 +14,8 @@ import { theme } from '../lib/theme';
 
 import Notifier from '../components/Notifier';
 import Header from '../components/Header';
+import I18nProvider from '../components/I18nProvider';
+import '../lib/i18n'; // Initialize i18n
 
 Router.events.on('routeChangeStart', () => {
   NProgress.start();
@@ -40,7 +42,8 @@ function MyApp({ Component, pageProps }) {
   const isServer = typeof window === 'undefined';
 
   return (
-    <CacheProvider
+    <I18nProvider>
+      <CacheProvider
       value={createCache({
         key: 'css',
       })}
@@ -62,6 +65,7 @@ function MyApp({ Component, pageProps }) {
         <Notifier />
       </ThemeProvider>
     </CacheProvider>
+    </I18nProvider>
   );
 }
 

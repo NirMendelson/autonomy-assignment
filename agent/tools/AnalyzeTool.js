@@ -17,8 +17,7 @@ class AnalyzeTool extends BaseTool {
     const state = this.agent.stateManager.getState();
     const files = state.context.filesToProcess || [];
     
-    this.log(`  🧠 Retrieved files from memory: ${JSON.stringify(files)}`);
-    this.log(`  🧠 Files type: ${typeof files}, length: ${files.length}`);
+    this.log(`  📊 Analyzing ${files.length} files for hardcoded strings...`);
     
     if (files.length === 0) {
       this.log('  ❌ No files to analyze');
@@ -33,14 +32,8 @@ class AnalyzeTool extends BaseTool {
     
     for (const filePath of files) {
       if (fs.existsSync(filePath)) {
-        this.log(`  📄 Analyzing ${filePath}...`);
         const content = fs.readFileSync(filePath, 'utf8');
-        this.log(`  📄 File content length: ${content.length} characters`);
-        this.log(`  📄 File content preview: ${content.substring(0, 300)}...`);
-        
         const strings = await this.findHardcodedStringsWithGPT(content, filePath);
-        
-        this.log(`  📊 Analysis complete for ${filePath}: ${strings.length} strings found`);
         
         if (strings.length > 0) {
           analysisResults.filesAnalyzed++;
@@ -53,10 +46,9 @@ class AnalyzeTool extends BaseTool {
             hasI18nSetup: content.includes('next-i18next') || content.includes('react-i18next')
           };
           
-          this.log(`  📝 Found ${strings.length} strings in ${filePath}`);
-          this.log(`  📝 Strings: ${strings.map(s => s.text).join(', ')}`);
+          this.log(`  📄 ${filePath}: ${strings.length} strings found`);
         } else {
-          this.log(`  ⚠️ No strings found in ${filePath}`);
+          this.log(`  📄 ${filePath}: No strings found`);
         }
       } else {
         this.log(`  ❌ File not found: ${filePath}`);
@@ -78,7 +70,6 @@ class AnalyzeTool extends BaseTool {
 
   async findHardcodedStringsWithGPT(content, filePath) {
     try {
-      this.log(`  🤖 Calling GPT for ${filePath}...`);
       
       const prompt = `Find ALL user-facing text in this React file. Return JSON with phrases array.
 
@@ -119,30 +110,44 @@ ${content}
         max_tokens: 2000
       });
 
-      this.log(`  📥 GPT response received`);
       
       let responseText = response.choices[0].message.content;
-      this.log(`  📄 Raw response length: ${responseText.length} characters`);
-      this.log(`  📄 Raw response preview: ${responseText.substring(0, 200)}...`);
       
       // Extract JSON from markdown code blocks if present
-      const jsonMatch = responseText.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
+      // Try multiple patterns to handle different GPT response formats
+      let jsonMatch = responseText.match(/```(?:json)?\s*\n?(\{[\s\S]*?\})\s*```/);
       if (jsonMatch) {
         responseText = jsonMatch[1];
-        this.log(`  🔍 Extracted JSON from markdown`);
       } else {
-        this.log(`  🔍 No markdown code blocks found, using raw response`);
+        // Try pattern without language specification
+        jsonMatch = responseText.match(/```\s*\n?(\{[\s\S]*?\})\s*```/);
+        if (jsonMatch) {
+          responseText = jsonMatch[1];
+        } else {
+          // Try pattern with just the opening brace
+          jsonMatch = responseText.match(/(\{[\s\S]*?\})/);
+          if (jsonMatch) {
+            responseText = jsonMatch[1];
+          }
+        }
       }
       
-      this.log(`  📄 Final JSON length: ${responseText.length} characters`);
-      this.log(`  📄 Final JSON preview: ${responseText.substring(0, 200)}...`);
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        this.log(`  ❌ JSON parsing failed: ${parseError.message}`);
+        this.log(`  📄 Raw response: ${responseText.substring(0, 200)}...`);
+        // Return empty array if JSON parsing fails
+        return [];
+      }
       
-      const result = JSON.parse(responseText);
-      this.log(`  ✅ JSON parsed successfully`);
-      this.log(`  📊 Found ${result.phrases ? result.phrases.length : 0} phrases`);
+      const phraseCount = result.phrases ? result.phrases.length : 0;
       
-      if (result.phrases && result.phrases.length > 0) {
-        this.log(`  📝 Phrases: ${result.phrases.map(p => p.text).join(', ')}`);
+      if (phraseCount > 0) {
+        this.log(`  📊 Found ${phraseCount} phrases: ${result.phrases.map(p => p.text).join(', ')}`);
+      } else {
+        this.log(`  ⚠️ No phrases found`);
       }
       
       // Convert to our format

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import NProgress from 'nprogress';
+import { useTranslation } from 'react-i18next';
 
 import Button from '@mui/material/Button';
 
@@ -20,13 +21,15 @@ const propTypes = {
 };
 
 function Index({ books }) {
+  const { t } = useTranslation();
+
   return (
     <div style={{ padding: '10px 45px' }}>
       <div>
-        <h2>Books</h2>
+        <h2>{t('header.books')}</h2>
         <Link href="/admin/add-book">
           <Button variant="contained" color="primary">
-            Add book
+            {t('button.add_book')}
           </Button>
         </Link>
         <p />
@@ -61,11 +64,12 @@ const defaultProps2 = {
 };
 
 function IndexWithData({ errorMessage }) {
+  const { t } = useTranslation();
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
     if (errorMessage) {
-      notify(errorMessage);
+      notify(t('error.message'));
     }
 
     const getBooks = async () => {

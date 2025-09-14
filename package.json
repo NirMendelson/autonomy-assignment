@@ -18,7 +18,7 @@
     "i18n:decide-targets": "node i18n-agent/decide-targets.js",
     "i18n:find-phrases": "node i18n-agent/find-phrases.js",
     "i18n:find-phrases-gpt": "node i18n-agent/find-phrases-gpt.js",
-    "i18n:agent": "node agent/i18n-agent.js",
+    "i18n:agent": "node agent/autonomous-i18n-agent.js",
     "i18n:smart-agent": "node agent/smart-i18n-agent.js",
     "i18n:autonomous": "node agent/autonomous-i18n-agent.js",
     "i18n:test-single": "node agent/test-single-file.js",

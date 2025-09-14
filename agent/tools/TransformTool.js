@@ -47,11 +47,7 @@ class TransformTool extends BaseTool {
   }
   
   async transformFile(filePath, fileAnalysis) {
-    this.log(`  🔍 TransformFile called with filePath: ${filePath}`);
-    this.log(`  🔍 FileAnalysis: ${JSON.stringify(fileAnalysis, null, 2)}`);
-    
     if (!filePath) {
-      this.log(`  ❌ filePath is undefined!`);
       return { success: false, error: 'File path is undefined' };
     }
     
@@ -60,23 +56,16 @@ class TransformTool extends BaseTool {
       return { success: false, error: 'File not found' };
     }
     
-    this.log(`  📄 Reading file: ${filePath}`);
     const originalContent = fs.readFileSync(filePath, 'utf8');
-    this.log(`  📄 File content length: ${originalContent.length} characters`);
     
     // Create backup
-    this.log(`  💾 Creating backup...`);
     await this.createBackup(filePath, originalContent);
     
     // Ask Claude to transform the file
-    this.log(`  🤖 Calling Claude to transform...`);
     const updatedContent = await this.askClaudeToTransform(filePath, originalContent, fileAnalysis);
-    
-    this.log(`  📥 Claude response received, length: ${updatedContent ? updatedContent.length : 'undefined'}`);
     
     if (updatedContent && updatedContent !== originalContent) {
       // Save the updated file
-      this.log(`  💾 Saving transformed file...`);
       fs.writeFileSync(filePath, updatedContent);
       
       this.log(`  ✅ File transformed successfully`);
@@ -138,18 +127,9 @@ Please return the updated file content with i18n translations applied. Make sure
 Return ONLY the updated file content, no explanations.`;
 
     try {
-      this.log(`  🤖 Calling Claude to transform ${filePath}...`);
-      this.log(`  📝 Prompt length: ${prompt.length} characters`);
-      
       const result = await this.askClaude(prompt, 8000);
-      
-      this.log(`  📥 Claude response received`);
-      this.log(`  📄 Response length: ${result.length} characters`);
-      this.log(`  📄 Response preview: ${result.substring(0, 200)}...`);
-      
       // Extract code from markdown code blocks if present
       const extractedCode = this.extractCodeFromMarkdown(result);
-      this.log(`  🔍 Extracted code length: ${extractedCode.length} characters`);
       
       return extractedCode;
     } catch (error) {
@@ -164,38 +144,26 @@ Return ONLY the updated file content, no explanations.`;
     const match = response.match(codeBlockRegex);
     
     if (match && match[1]) {
-      this.log(`  🔍 Found code block, extracting content...`);
       return match[1].trim();
     }
     
     // If no code block found, return the response as-is
-    this.log(`  🔍 No code block found, using response as-is`);
     return response.trim();
   }
 
   async createBackup(filePath, content) {
-    this.log(`  💾 Creating backup for: ${filePath}`);
-    this.log(`  💾 Agent backupDir: ${this.agent.backupDir}`);
-    
     if (!this.agent.backupDir) {
-      this.log(`  ❌ Agent backupDir is undefined!`);
       throw new Error('Agent backupDir is undefined');
     }
     
     const backupPath = path.join(this.agent.backupDir, filePath);
-    this.log(`  💾 Backup path: ${backupPath}`);
-    
     const backupDir = path.dirname(backupPath);
-    this.log(`  💾 Backup directory: ${backupDir}`);
     
     if (!fs.existsSync(backupDir)) {
-      this.log(`  💾 Creating backup directory: ${backupDir}`);
       fs.mkdirSync(backupDir, { recursive: true });
     }
     
-    this.log(`  💾 Writing backup file...`);
     fs.writeFileSync(backupPath, content);
-    this.log(`  💾 Backup created successfully`);
   }
   
   countChanges(original, updated) {

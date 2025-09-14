@@ -36,8 +36,9 @@ class DecisionEngine extends BaseTool {
       hasTranslations: (state.context.translateResults && state.context.translateResults.stringsTranslated > 0) || state.phase === 'translating_complete',
       hasTransformedCode: (state.context.transformResults && state.context.transformResults.filesTransformed > 0) || state.phase === 'transforming_complete',
       hasLocaleFiles: (state.context.localeResults && state.context.localeResults.localeFilesCreated > 0) || state.phase === 'locale_complete',
-      hasI18nSetup: (state.context.setupResults && state.context.setupResults.configFilesCreated > 0) || state.phase === 'setup_complete',
-      hasIssues: state.context.issues.length > 0,
+        hasI18nSetup: (state.context.setupResults && state.context.setupResults.configFilesCreated > 0) || state.phase === 'setup_complete',
+        hasIntegration: (state.context.integrateResults && state.context.integrateResults.integrationComplete) || state.phase === 'integration_complete',
+        hasIssues: state.context.issues.length > 0,
       completedTasks: state.completedTasks.length,
       failedAttempts: Object.keys(state.failedAttempts).length,
       canRetry: this.canRetryAnyTool(),
@@ -65,8 +66,9 @@ ANALYSIS:
 - Has transformed code: ${analysis.hasTransformedCode}
 - Has translations: ${analysis.hasTranslations}
 - Has locale files: ${analysis.hasLocaleFiles}
-- Has i18n setup: ${analysis.hasI18nSetup}
-- Has issues: ${analysis.hasIssues}
+       - Has i18n setup: ${analysis.hasI18nSetup}
+       - Has integration: ${analysis.hasIntegration}
+       - Has issues: ${analysis.hasIssues}
 - Can retry: ${analysis.canRetry}
 - Is stuck: ${analysis.isStuck}
 
@@ -76,11 +78,12 @@ AVAILABLE ACTIONS:
 3. transform - Convert hardcoded strings to t() calls
 4. translate - Generate translations for strings
 5. locale - Create locale files
-6. setup - Create i18n configuration and provider
-7. validate - Check for errors and issues
-8. retry - Try again with different approach
-9. rollback - Undo changes and start over
-10. complete - Finish successfully
+       6. setup - Create i18n configuration and provider
+       7. integrate - Integrate i18n into Next.js app
+       8. validate - Check for errors and issues
+       9. retry - Try again with different approach
+       10. rollback - Undo changes and start over
+       11. complete - Finish successfully
 
 RECENT FAILURES:
 ${this.getRecentFailures()}
@@ -97,15 +100,17 @@ IMPORTANT WORKFLOW RULES:
 - If I have strings but no transformed code → use "transform" to replace with t() calls
 - If I have transformed code but no translations → use "translate" 
 - If I have translations but no locale files → use "locale" to create translation files
-- If I have locale files but no i18n setup → use "setup" to create configuration
-- If I have i18n setup but haven't validated → use "validate" to check everything works
-- If everything is complete and working → use "complete" to finish
+       - If I have locale files but no i18n setup → use "setup" to create configuration
+       - If I have i18n setup but no integration → use "integrate" to integrate into app
+       - If I have integration but haven't validated → use "validate" to check everything works
+       - If everything is complete and working → use "complete" to finish
 - Don't keep repeating the same action if it's not finding new data
 - SearchTool only discovers files, AnalyzeTool finds strings in files
 - Transform before translate - replace hardcoded strings with t() calls first
 - If phase is 'transforming_complete' and no translations → use "translate"
 - If phase is 'translating_complete' and no locale files → use "locale"
-- If phase is 'locale_complete' and no i18n setup → use "setup"
+       - If phase is 'locale_complete' and no i18n setup → use "setup"
+       - If phase is 'setup_complete' and no integration → use "integrate"
 
 Respond with JSON:
 {
