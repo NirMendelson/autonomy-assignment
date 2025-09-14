@@ -1,19 +1,3 @@
 [
-  "components\\Header.jsx",
-  "components\\MenuWithAvatar.jsx",
-  "components\\Notifier.jsx",
-  "components\\admin\\EditBook.jsx",
-  "components\\customer\\BuyButton.jsx",
-  "i18n-agent\\decide-targets.js",
-  "lib\\withAuth.jsx",
-  "pages\\_app.jsx",
-  "pages\\_document.jsx",
-  "pages\\admin\\add-book.jsx",
-  "pages\\admin\\book-detail.jsx",
-  "pages\\admin\\edit-book.jsx",
-  "pages\\admin\\index.jsx",
-  "pages\\customer\\my-books.jsx",
-  "pages\\index.jsx",
-  "pages\\public\\login.jsx",
-  "pages\\public\\read-chapter.jsx"
+  "test-i18n/components/Header.jsx"
 ]

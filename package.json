@@ -15,12 +15,23 @@
     "i18n:backup": "node i18n-agent/backup.js backup",
     "i18n:restore": "node i18n-agent/backup.js restore",
     "i18n:backup-info": "node i18n-agent/backup.js info",
-    "i18n:decide-targets": "node i18n-agent/decide-targets.js"
+    "i18n:decide-targets": "node i18n-agent/decide-targets.js",
+    "i18n:find-phrases": "node i18n-agent/find-phrases.js",
+    "i18n:find-phrases-gpt": "node i18n-agent/find-phrases-gpt.js",
+    "i18n:agent": "node agent/i18n-agent.js",
+    "i18n:smart-agent": "node agent/smart-i18n-agent.js",
+    "i18n:autonomous": "node agent/autonomous-i18n-agent.js",
+    "i18n:test-single": "node agent/test-single-file.js",
+    "i18n:test-search": "node agent/test-search-only.js",
+    "i18n:test-validation": "node agent/test-validation.js",
+    "i18n:test-autonomous": "node agent/test-autonomous.js",
+    "i18n:test-minimal": "node agent/test-minimal.js"
   },
   "jest": {
     "coverageDirectory": "./.coverage"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.62.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
@@ -33,7 +44,7 @@
     "aws-sdk": "^2.1475.0",
     "compression": "^1.7.4",
     "connect-mongo": "^5.1.0",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "front-matter": "^4.0.2",
@@ -50,6 +61,7 @@
     "next-i18next": "^15.4.2",
     "node-fetch": "2.6.7",
     "nprogress": "^0.2.0",
+    "openai": "^5.20.2",
     "passport": "^0.6.0",
     "passport-google-oauth": "^2.0.0",
     "prop-types": "^15.8.1",
