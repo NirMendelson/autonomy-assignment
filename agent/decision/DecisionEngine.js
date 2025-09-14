@@ -32,7 +32,7 @@ class DecisionEngine extends BaseTool {
     const analysis = {
       phase: state.phase,
       hasFiles: state.context.filesToProcess.length > 0,
-      hasStrings: state.context.stringsFound.length > 0,
+      hasStrings: (state.context.stringsFound && state.context.stringsFound > 0) || (state.context.stringsFound && state.context.stringsFound.length > 0),
       hasTranslations: state.context.translationsNeeded.length > 0,
       hasIssues: state.context.issues.length > 0,
       completedTasks: state.completedTasks.length,
@@ -51,7 +51,7 @@ CURRENT STATE:
 - Phase: ${state.phase}
 - Target Language: ${state.targetLanguage}
 - Files to process: ${state.context.filesToProcess.length}
-- Strings found: ${state.context.stringsFound.length}
+- Strings found: ${state.context.stringsFound || 0}
 - Issues: ${state.context.issues.length}
 - Completed tasks: ${state.completedTasks.length}
 - Failed attempts: ${Object.keys(state.failedAttempts).length}
@@ -84,6 +84,12 @@ What should I do next? Consider:
 - What's the logical next step?
 - Should I retry something that failed?
 - Am I stuck and need to change strategy?
+
+IMPORTANT WORKFLOW RULES:
+- If I have files but no strings found → use "analyze" to find strings
+- If I have strings but no translations → use "translate" 
+- If I have translations but no transformed code → use "transform"
+- Don't keep repeating the same action if it's not finding new data
 
 Respond with JSON:
 {
@@ -129,11 +135,11 @@ Respond with JSON:
       return { action: 'search', reasoning: 'Need to find files first', confidence: 0.7 };
     }
     
-    if (state.context.stringsFound.length === 0) {
-      return { action: 'search', reasoning: 'Need to find strings', confidence: 0.7 };
+    if (!state.context.stringsFound || state.context.stringsFound === 0) {
+      return { action: 'analyze', reasoning: 'Need to analyze files for strings', confidence: 0.7 };
     }
     
-    if (state.phase === 'searching' && state.context.stringsFound.length > 0) {
+    if (state.phase === 'searching' && state.context.stringsFound > 0) {
       return { action: 'analyze', reasoning: 'Analyze found strings', confidence: 0.8 };
     }
     

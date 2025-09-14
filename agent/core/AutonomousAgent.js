@@ -296,8 +296,10 @@ class AutonomousAgent {
   updateStateFromResult(action, result) {
     // Update context based on results
     if (result && result.files) {
+      // Handle both array and object formats
+      const files = Array.isArray(result.files) ? result.files : Object.keys(result.files);
       this.stateManager.updateContext({
-        filesToProcess: Object.keys(result.files)
+        filesToProcess: files
       });
     }
     

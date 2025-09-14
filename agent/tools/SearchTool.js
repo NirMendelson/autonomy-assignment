@@ -1,18 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const BaseTool = require('./BaseTool');
-const OpenAI = require('openai');
 
 class SearchTool extends BaseTool {
-  constructor(agent) {
-    super(agent);
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    });
-  }
 
   async execute() {
-    this.log('🔍 Searching for hardcoded strings...');
+    this.log('🔍 Discovering React files...');
     
     // Get files from agent's memory/state
     let targets = this.agent.stateManager.getState().context.filesToProcess;
@@ -22,99 +15,27 @@ class SearchTool extends BaseTool {
       this.log('  📁 No files in memory, discovering JSX files...');
       targets = await this.discoverJSXFiles();
       
-      // Store files in agent's memory
-      this.agent.stateManager.updateContext({
-        filesToProcess: targets
-      });
-      
-      this.log(`  🧠 Stored ${targets.length} files in agent memory`);
+    // Store files in agent's memory and update phase
+    this.agent.stateManager.updateContext({
+      filesToProcess: targets
+    });
+    
+    this.agent.stateManager.updateState({
+      phase: 'searching'
+    });
+    
+    this.log(`  🧠 Stored ${targets.length} files in agent memory`);
+    this.log(`  🧠 Files stored: ${JSON.stringify(targets)}`);
     } else {
       this.log(`  🧠 Using ${targets.length} files from agent memory`);
     }
     
-    const results = {
-      totalStrings: 0,
-      filesWithStrings: 0,
-      files: {}
+    return {
+      filesDiscovered: targets.length,
+      files: targets
     };
-    
-    for (const filePath of targets) {
-      if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath, 'utf8');
-        const strings = await this.findHardcodedStringsWithGPT(content, filePath);
-        
-        if (strings.length > 0) {
-          results.filesWithStrings++;
-          results.totalStrings += strings.length;
-          results.files[filePath] = {
-            strings: strings,
-            count: strings.length
-          };
-        }
-      }
-    }
-    
-    return results;
   }
   
-  async findHardcodedStringsWithGPT(content, filePath) {
-    try {
-      const prompt = `Find user-facing text in this React file. Return JSON with phrases array.
-
-Rules:
-- Include button text, links, labels, messages users see
-- Exclude HTML IDs, CSS classes, code logic
-- Generate semantic keys like "button.save", "menu.my_books"
-- Return only valid JSON: {"phrases": [{"text": "original", "key": "semantic.key"}]}
-
-File: ${filePath}
-
-\`\`\`jsx
-${content}
-\`\`\``;
-
-      const response = await this.openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.1,
-        max_tokens: 2000
-      });
-
-      const result = JSON.parse(response.choices[0].message.content);
-      
-      // Convert to our format
-      return result.phrases.map(phrase => ({
-        text: phrase.text,
-        key: phrase.key,
-        line: this.findLineNumber(content, phrase.text),
-        context: this.findContext(content, phrase.text)
-      }));
-
-    } catch (error) {
-      this.log(`  ❌ GPT analysis failed for ${filePath}: ${error.message}`);
-      return [];
-    }
-  }
-
-  findLineNumber(content, text) {
-    const lines = content.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(text)) {
-        return i + 1;
-      }
-    }
-    return 1;
-  }
-
-  findContext(content, text) {
-    const lines = content.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].includes(text)) {
-        return lines[i].trim();
-      }
-    }
-    return '';
-  }
   
   isTranslatable(text) {
     // Skip very short strings, numbers, variables, etc.
