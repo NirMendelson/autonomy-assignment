@@ -5,7 +5,6 @@ import TextField from '@mui/material/TextField';
 import Input from '@mui/material/Input';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import { useTranslation } from 'react-i18next';
 
 import { getGithubReposApiMethod } from '../../lib/api/admin';
 import { styleTextField } from '../SharedStyles';
@@ -44,20 +43,19 @@ class EditBook extends React.Component {
   onSubmit = (event) => {
     event.preventDefault();
     const { name, price, githubRepo } = this.state.book;
-    const { t } = this.props;
 
     if (!name) {
-      notify(t('error.name_required'));
+      notify('Name is required');
       return;
     }
 
     if (!price) {
-      notify(t('error.price_required'));
+      notify('Price is required');
       return;
     }
 
     if (!githubRepo) {
-      notify(t('error.github_repo_required'));
+      notify('Github repo is required');
       return;
     }
 
@@ -65,8 +63,6 @@ class EditBook extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
-
     return (
       <div style={{ padding: '10px 45px' }}>
         <form onSubmit={this.onSubmit}>
@@ -81,7 +77,7 @@ class EditBook extends React.Component {
               }}
               value={this.state.book.name}
               type="text"
-              label={t('label.book_title')}
+              label="Book's title"
               style={styleTextField}
             />
           </div>
@@ -96,7 +92,7 @@ class EditBook extends React.Component {
             }}
             value={this.state.book.price}
             type="number"
-            label={t('label.book_price')}
+            label="Book's price"
             className="textFieldInput"
             style={styleTextField}
             step="1"
@@ -104,7 +100,7 @@ class EditBook extends React.Component {
           <br />
           <br />
           <div>
-            <span>{t('label.github_repo')}</span>
+            <span>Github repo: </span>
             <Select
               value={this.state.book.githubRepo || ''}
               input={<Input />}
@@ -117,7 +113,7 @@ class EditBook extends React.Component {
               }}
             >
               <MenuItem value="">
-                <em>{t('menu.choose_github_repo')}</em>
+                <em>-- choose github repo --</em>
               </MenuItem>
               {this.state.repos.map((r) => (
                 <MenuItem value={r.full_name} key={r.id}>
@@ -129,7 +125,7 @@ class EditBook extends React.Component {
           <br />
           <br />
           <Button variant="contained" color="primary" type="submit">
-            {t('button.save')}
+            Save
           </Button>
         </form>
       </div>
@@ -140,9 +136,4 @@ class EditBook extends React.Component {
 EditBook.propTypes = propTypes;
 EditBook.defaultProps = defaultProps;
 
-function EditBookWithTranslation(props) {
-  const { t } = useTranslation();
-  return <EditBook {...props} t={t} />;
-}
-
-export default EditBookWithTranslation;
+export default EditBook;

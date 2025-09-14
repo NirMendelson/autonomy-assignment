@@ -106,7 +106,46 @@ async function restoreBackup() {
       }
     }
 
-    console.log(`✅ Restore complete! ${restoredFiles} files restored from ${BACKUP_DIR}/`);
+    // Delete i18n files created by the agent
+    console.log('🗑️  Cleaning up i18n files created by agent...');
+    const i18nFilesToDelete = [
+      'components/LanguageSwitcher.jsx',
+      'components/I18nProvider.jsx',
+      'lib/i18n.js',
+      'locales/en/common.json',
+      'locales/es/common.json'
+    ];
+
+    let deletedFiles = 0;
+    for (const filePath of i18nFilesToDelete) {
+      if (fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+          deletedFiles++;
+          console.log(`🗑️  Deleted: ${filePath}`);
+        } catch (error) {
+          console.log(`⚠️  Failed to delete ${filePath}: ${error.message}`);
+        }
+      }
+    }
+
+    // Clean up empty directories
+    const directoriesToClean = ['locales/en', 'locales/es', 'locales'];
+    for (const dirPath of directoriesToClean) {
+      if (fs.existsSync(dirPath)) {
+        try {
+          const files = fs.readdirSync(dirPath);
+          if (files.length === 0) {
+            fs.rmdirSync(dirPath);
+            console.log(`🗑️  Removed empty directory: ${dirPath}`);
+          }
+        } catch (error) {
+          // Directory not empty or other error, ignore
+        }
+      }
+    }
+
+    console.log(`✅ Restore complete! ${restoredFiles} files restored, ${deletedFiles} i18n files deleted`);
     return true;
 
   } catch (error) {

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import Error from 'next/error';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
-import { useTranslation } from 'react-i18next';
 
 import { getBookDetailApiMethod, syncBookContentApiMethod } from '../../lib/api/admin';
 import withAuth from '../../lib/withAuth';
@@ -15,7 +14,6 @@ const propTypes = {
 };
 
 function BookDetail({ slug }) {
-  const { t } = useTranslation();
   const [book, setBook] = useState(null);
   const [error, setError] = useState(null);
 
@@ -41,7 +39,7 @@ function BookDetail({ slug }) {
 
     try {
       await syncBookContentApiMethod({ bookId });
-      notify(t('notification.synced'));
+      notify('Synced');
     } catch (err) {
       notify(err);
     }
@@ -62,7 +60,7 @@ function BookDetail({ slug }) {
     <div style={{ padding: '10px 45px' }}>
       <h2>{book.name}</h2>
       <a href={`https://github.com/${book.githubRepo}`} target="_blank" rel="noopener noreferrer">
-        {t('link.repo_on_github')}
+        Repo on Github
       </a>
       <p />
       <Button
@@ -71,11 +69,11 @@ function BookDetail({ slug }) {
         onClick={handleSyncContent}
         style={{ marginRight: '20px' }}
       >
-        {t('button.sync_with_github')}
+        Sync with Github
       </Button>
       <Link href={`/admin/edit-book?slug=${book.slug}`} as={`/admin/edit-book/${book.slug}`}>
         <Button variant="contained" color="primary">
-          {t('button.edit_book')}
+          Edit book
         </Button>
       </Link>
       <ul>

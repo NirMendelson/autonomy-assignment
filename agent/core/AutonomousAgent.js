@@ -53,7 +53,7 @@ class AutonomousAgent {
     this.config = {
       maxIterations: 50,
       timeout: 300000, // 5 minutes
-      targetLanguage: 'es'
+      targetLanguage: process.env.I18N_TARGET_LANGUAGE || 'es'
     };
     
     // No need for targets file - files are stored in memory

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 import PropTypes from 'prop-types';
-import { useTranslation } from 'react-i18next';
 // import Error from 'next/error';
 
 import EditBook from '../../components/admin/EditBook';
@@ -15,7 +14,6 @@ const propTypes = {
 };
 
 function EditBookPage({ slug }) {
-  const { t } = useTranslation();
   const [book, setBook] = useState(null);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ function EditBookPage({ slug }) {
 
     try {
       const editedBook = await editBookApiMethod({ ...data, id: book._id });
-      notify(t('notification.saved'));
+      notify('Saved');
 
       Router.push(
         `/admin/book-detail?slug=${editedBook.slug}`,

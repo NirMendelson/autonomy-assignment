@@ -1,71 +1,69 @@
-# 🛠️ i18n Agent Workflow
+# 💪 Home Assignment: Build an i18n Agent for a React App
 
-This project automates the process of internationalizing a React codebase by using a single AI agent.  
-We will use **GPT-5 Mini** as the model of choice since it balances strong code reasoning with affordable cost.
+Welcome! As part of this assignment, you'll demonstrate your ability to:
 
----
-
-## 🔄 Process Overview
-
-The agent works in **4 main stages**:
-
-1. **Decide Targets**  
-   - Scan the repository to determine which files are frontend/UI and require changes.  
-   - Example criteria: React/JSX present, imports from UI libraries, excluded tests and backend files.  
-   - Output: `targets.json` — a JSON list of files to process.
-
-2. **Find Hardcoded Phrases & Suggest Keys**  
-   - Parse each file and identify hardcoded user-facing strings (labels, placeholders, notifications, button text, etc).  
-   - Suggest stable i18n keys for each string based on file context and usage.  
-   - Output: `candidates.json` — a JSON mapping of raw strings → suggested keys.
-
-3. **Edit Files**  
-   - Replace hardcoded strings with calls to `t('key')`.  
-   - Inject imports if missing.  
-   - Update `i18n/en.json` with the extracted keys and their default English values.  
-   - Output: changed source files + `locale_delta.json`.
-
-4. **Validate**  
-   - Run build checks (`npm run typecheck`, `npm run build`, `npm run dev`) to ensure no regressions.  
-   - Rescan changed files to confirm no visible literals remain.  
-   - Output: `validate.json` — success/failure report with suggested fixes.
+- Work with a **React codebase**
+- Build a **Python agent**
+- Interface with **LLM APIs**
 
 ---
 
-## 💾 Backup & Restore
+## 📜 The Task
 
-To safely test the agent’s edits, we provide commands to **backup** the code before running the agent and to **restore** it afterwards.
+You're provided with a simple React app. Your task is **not** to manually refactor it for internationalization.
 
-- **Backup**:  
-  ```bash
-  npm run i18n:backup
-  Creates a snapshot of all target files in `.i18n-backup/`.
-
-- **Restore**:
-  ```bash
-  npm run i18n:restore
-  ```
-  Restores files from `.i18n-backup/` back to their original state.
-
-This allows repeatable testing:
-1. Run the agent
-2. Validate results  
-3. Restore to original state
-4. Re-run with adjustments
+Instead, you will **build an automated agent in Python** that adds internationalization
 
 ---
 
-## 📂 Artifacts
+## 🧠 AI Agent Behavior
 
-During the run, the agent produces machine-readable artifacts for traceability:
+Your agent must work end-to-end without human intervention
 
-- `.i18n-agent/targets.json` → list of frontend files to process
-- `.i18n-agent/candidates.json` → all detected hardcoded strings with suggested keys
-- `.i18n-agent/edits.json` → actual code changes applied
-- `.i18n-agent/validate.json` → validation and error report
+You **must not** use LLM tools manually to do the refactor. The goal is to **automate this process through your Python agent**.
 
 ---
 
-## 🚀 Usage
+## 🧑‍💻 OpenAI API Key
 
-Typical workflow:
+Alongside this repository you should get a key
+
+```
+
+```
+
+If you did not get a valid key to use, please get in touch.
+
+---
+
+## 📹 Loom Video
+
+As part of your submission, please record a **short Loom video (2–5 minutes)** walking us through:
+
+- Your approach and reasoning
+- How the agent works
+- A quick demo of it in action
+
+---
+
+## ✅ Submission Checklist
+
+- [ ] Python agent code (self-contained and runnable)
+- [ ] Updated React project with i18n changes applied by the agent
+- [ ] Short Loom video link
+
+---
+
+## ⏱️ Scope & Expectations
+
+We don't expect perfection — we’re looking for:
+- A thoughtful approach
+- Basic LLM interaction
+- Sensible automation
+- Clean, readable code
+
+You can use any Python tools, packages, or abstractions you find helpful.
+
+---
+
+You have 3 days for this task, good luck! 

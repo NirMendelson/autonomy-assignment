@@ -1,10 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import Snackbar from '@mui/material/Snackbar';
 
 let openSnackbarFn;
 
-class NotifierClass extends React.Component {
+class Notifier extends React.Component {
   constructor(props) {
     super(props);
 
@@ -30,7 +29,6 @@ class NotifierClass extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
     const message = (
       <span id="snackbar-message-id" dangerouslySetInnerHTML={{ __html: this.state.message }} />
     );
@@ -48,11 +46,6 @@ class NotifierClass extends React.Component {
       />
     );
   }
-}
-
-function Notifier(props) {
-  const { t } = useTranslation();
-  return <NotifierClass {...props} t={t} />;
 }
 
 export function openSnackbarExported({ message }) {

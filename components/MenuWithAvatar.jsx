@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
-import { useTranslation } from 'react-i18next';
 
 const propTypes = {
   src: PropTypes.string.isRequired,
@@ -30,7 +29,7 @@ class MenuWithAvatar extends React.Component {
   };
 
   render() {
-    const { options, src, alt, t } = this.props;
+    const { options, src, alt } = this.props;
     const { anchorEl } = this.state;
 
     return (
@@ -41,7 +40,7 @@ class MenuWithAvatar extends React.Component {
           onClick={this.handleClick}
           onKeyPress={this.handleClick}
           src={src}
-          alt={alt === 'original' ? t('alt.avatar') : alt}
+          alt={alt}
           style={{ margin: '0px 20px 0px auto', cursor: 'pointer' }}
         />
         <Menu
@@ -61,11 +60,11 @@ class MenuWithAvatar extends React.Component {
                     this.handleClose();
                   }}
                 >
-                  {option.text === 'option.text' ? t('menu.option_text') : option.text}
+                  {option.text}
                 </MenuItem>
               ) : (
                 <Link href={option.href} as={option.as || option.href}>
-                  <MenuItem>{option.text === 'option.text' ? t('menu.option_text') : option.text}</MenuItem>
+                  <MenuItem>{option.text}</MenuItem>
                 </Link>
               )}
             </div>
@@ -76,11 +75,6 @@ class MenuWithAvatar extends React.Component {
   }
 }
 
-const MenuWithAvatarWrapper = (props) => {
-  const { t } = useTranslation();
-  return <MenuWithAvatar {...props} t={t} />;
-};
+MenuWithAvatar.propTypes = propTypes;
 
-MenuWithAvatarWrapper.propTypes = propTypes;
-
-export default MenuWithAvatarWrapper;
+export default MenuWithAvatar;
