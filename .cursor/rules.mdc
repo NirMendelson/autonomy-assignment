@@ -1,6 +1,4 @@
 ---
-description:
-globs:
 alwaysApply: true
 ---
 1. File length – Any file we create must be less than 350 lines of code.

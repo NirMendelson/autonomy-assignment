@@ -11,7 +11,11 @@
     "build": "next build",
     "start": "node server/server.js",
     "lint": "eslint '**/*.js' '**/*.jsx'",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "i18n:backup": "node i18n-agent/backup.js backup",
+    "i18n:restore": "node i18n-agent/backup.js restore",
+    "i18n:backup-info": "node i18n-agent/backup.js info",
+    "i18n:decide-targets": "node i18n-agent/decide-targets.js"
   },
   "jest": {
     "coverageDirectory": "./.coverage"
