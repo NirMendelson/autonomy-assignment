@@ -2,22 +2,6 @@
 
 An intelligent AI-powered Python agent that automatically internationalizes React applications by finding hardcoded strings, transforming them to use translation functions, generating translations, and integrating everything into your Next.js app.
 
-## 🏗️ Python Agent Architecture
-
-The agent is built with a modular Python architecture:
-
-- **`core/autonomous_agent.py`** - Main agent orchestrator
-- **`tools/`** - Specialized tools for each phase:
-  - `search_tool.py` - File discovery and search
-  - `analyze_tool.py` - String analysis and key generation
-  - `transform_tool.py` - Code transformation
-  - `translate_tool.py` - Translation generation
-  - `locale_tool.py` - Locale file management
-  - `setup_tool.py` - i18n configuration
-  - `integrate_tool.py` - Component integration
-- **`decision/decision_engine.py`** - Decision making logic
-- **`state/state_manager.py`** - Agent state management
-- **`error/error_handler.py`** - Error handling and recovery
 
 ## 🔄 Agent Workflow
 
@@ -146,14 +130,3 @@ I18N_TARGET_LANGUAGE=ko    # Korean
 I18N_TARGET_LANGUAGE=ar    # Arabic
 I18N_TARGET_LANGUAGE=ru    # Russian
 ```
-
-**Supported Languages**: Any language supported by Claude AI. The Python agent will automatically create locale files for both the target language and English (as fallback).
-
-## 🐍 Python Agent Benefits
-
-- **Async Processing**: Handles multiple files concurrently for faster processing
-- **Modular Architecture**: Easy to extend and customize individual tools
-- **Robust Error Handling**: Graceful recovery from API failures and edge cases
-- **State Management**: Maintains context across all phases
-- **Memory Efficient**: Processes large codebases without memory issues
-- **Cross-Platform**: Works on Windows, macOS, and Linux
