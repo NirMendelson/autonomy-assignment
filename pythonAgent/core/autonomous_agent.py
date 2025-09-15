@@ -118,9 +118,6 @@ class AutonomousAgent:
         from tools.locale_tool import LocaleTool
         from tools.setup_tool import SetupTool
         from tools.integrate_tool import IntegrateTool
-        from tools.validate_tool import ValidateTool
-        from tools.rollback_tool import RollbackTool
-        from tools.report_tool import ReportTool
         
         # Initialize tools
         self.tools = {
@@ -130,10 +127,7 @@ class AutonomousAgent:
             'translate': TranslateTool(self),
             'locale': LocaleTool(self),
             'setup': SetupTool(self),
-            'integrate': IntegrateTool(self),
-            'validate': ValidateTool(self),
-            'rollback': RollbackTool(self),
-            'report': ReportTool(self)
+            'integrate': IntegrateTool(self)
         }
     
     async def _run_main_loop(self) -> bool:
@@ -181,8 +175,7 @@ class AutonomousAgent:
                     break
                 
                 if error_result.action == 'rollback':
-                    if 'rollback' in self.tools:
-                        await self.tools['rollback'].execute()
+                    print('Rollback requested but rollback tool not available')
                     break
         
         return self.state_manager.is_goal_achieved()
@@ -211,12 +204,8 @@ class AutonomousAgent:
                 return await self._execute_setup()
             elif action == 'integrate':
                 return await self._execute_integrate()
-            elif action == 'validate':
-                return await self._execute_validate()
             elif action == 'retry':
                 return await self._execute_retry()
-            elif action == 'rollback':
-                return await self._execute_rollback()
             elif action == 'complete':
                 return await self._execute_complete()
             else:
@@ -281,13 +270,6 @@ class AutonomousAgent:
         self.state_manager.add_completed_task('integrate')
         return result
     
-    async def _execute_validate(self):
-        """Execute validate action."""
-        self.state_manager.set_phase('validating')
-        result = await self.tools['validate'].execute()
-        self.state_manager.update_state({'validate_results': result})
-        self.state_manager.add_completed_task('validate')
-        return result
     
     async def _execute_retry(self):
         """Execute retry action."""
@@ -296,11 +278,6 @@ class AutonomousAgent:
         # Simple retry - just continue with the loop
         return {'retry': True}
     
-    async def _execute_rollback(self):
-        """Execute rollback action."""
-        if 'rollback' in self.tools:
-            return await self.tools['rollback'].execute()
-        return {'rollback': True}
     
     async def _execute_complete(self):
         """Execute complete action."""
@@ -328,12 +305,7 @@ class AutonomousAgent:
         print('EMERGENCY: Performing emergency rollback...')
         self.logger.error('Performing emergency rollback')
         
-        if 'rollback' in self.tools:
-            try:
-                await self.tools['rollback'].execute()
-            except Exception as error:
-                print(f'FAILED: Emergency rollback failed: {error}')
-                self.logger.error(f'Emergency rollback failed: {error}')
+        print('Emergency rollback requested but rollback tool not available')
     
     def get_status(self) -> Dict[str, Any]:
         """Get current agent status."""

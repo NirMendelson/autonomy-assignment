@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Head from 'next/head';
+import { useTranslation } from 'next-i18next';
 
 import { getMyBookListApiMethod } from '../../lib/api/customer';
 import withAuth from '../../lib/withAuth';
@@ -19,15 +20,17 @@ const defaultProps = {
 };
 
 function MyBooks({ purchasedBooks }) {
+  const { t } = useTranslation();
+
   return (
     <div>
       <Head>
-        <title>My Books</title>
+        <title>{t('page.title')}</title>
       </Head>
       <div style={{ padding: '10px 45px' }}>
         {purchasedBooks && purchasedBooks.length > 0 ? (
           <div>
-            <h3>Your books</h3>
+            <h3>{t('heading.your_books')}</h3>
             <ul>
               {purchasedBooks &&
                 purchasedBooks.length > 0 &&
@@ -45,8 +48,8 @@ function MyBooks({ purchasedBooks }) {
           </div>
         ) : (
           <div>
-            <h3>Your books</h3>
-            <p>You have not purchased any book.</p>
+            <h3>{t('heading.your_books')}</h3>
+            <p>{t('message.no_books_purchased')}</p>
           </div>
         )}
       </div>

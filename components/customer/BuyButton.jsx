@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import NProgress from 'nprogress';
 import Button from '@mui/material/Button';
 import { loadStripe } from '@stripe/stripe-js';
+import { useTranslation } from 'next-i18next';
 
 import { fetchCheckoutSessionApiMethod } from '../../lib/api/customer';
 
@@ -84,7 +85,7 @@ class BuyButton extends React.Component {
   };
 
   render() {
-    const { book, user } = this.props;
+    const { book, user, t } = this.props;
 
     if (!book) {
       return null;
@@ -99,7 +100,7 @@ class BuyButton extends React.Component {
             style={styleBuyButton}
             onClick={this.onLoginClicked}
           >
-            {`Buy book for $${book.price}`}
+            {t('button.buy_book', { price: book.price })}
           </Button>
           <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
           <hr />
@@ -114,7 +115,7 @@ class BuyButton extends React.Component {
           style={styleBuyButton}
           onClick={this.handleCheckoutClick}
         >
-          {`Buy book for $${book.price}`}
+          {t('button.buy_book', { price: book.price })}
         </Button>
         <p style={{ verticalAlign: 'middle', fontSize: '15px' }}>{book.textNearButton}</p>
         <hr />
@@ -126,4 +127,12 @@ class BuyButton extends React.Component {
 BuyButton.propTypes = propTypes;
 BuyButton.defaultProps = defaultProps;
 
-export default BuyButton;
+// HOC to inject translation function
+function withTranslation(Component) {
+  return function WrappedComponent(props) {
+    const { t } = useTranslation();
+    return <Component {...props} t={t} />;
+  };
+}
+
+export default withTranslation(BuyButton);

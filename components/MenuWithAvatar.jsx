@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
+import { useTranslation } from 'next-i18next';
 
 const propTypes = {
   src: PropTypes.string.isRequired,
@@ -29,14 +30,14 @@ class MenuWithAvatar extends React.Component {
   };
 
   render() {
-    const { options, src, alt } = this.props;
+    const { options, src, alt, t } = this.props;
     const { anchorEl } = this.state;
 
     return (
       <div>
         <Avatar
           aria-controls={anchorEl ? 'simple-menu' : null}
-          aria-haspopup="true"
+          aria-haspopup={t("aria.haspopup")}
           onClick={this.handleClick}
           onKeyPress={this.handleClick}
           src={src}
@@ -75,6 +76,14 @@ class MenuWithAvatar extends React.Component {
   }
 }
 
-MenuWithAvatar.propTypes = propTypes;
+MenuWithAvatar.propTypes = {
+  ...propTypes,
+  t: PropTypes.func.isRequired,
+};
 
-export default MenuWithAvatar;
+function MenuWithAvatarWithTranslation(props) {
+  const { t } = useTranslation();
+  return <MenuWithAvatar {...props} t={t} />;
+}
+
+export default MenuWithAvatarWithTranslation;

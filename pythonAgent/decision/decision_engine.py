@@ -126,10 +126,8 @@ AVAILABLE ACTIONS:
 5. locale - Create locale files
 6. setup - Create i18n configuration and provider
 7. integrate - Integrate i18n into Next.js app
-8. validate - Check for errors and issues
-9. retry - Try again with different approach
-10. rollback - Undo changes and start over
-11. complete - Finish successfully
+8. retry - Try again with different approach
+9. complete - Finish successfully
 
 RECENT FAILURES:
 {self._get_recent_failures()}
@@ -148,8 +146,7 @@ IMPORTANT WORKFLOW RULES:
 - If I have translations but no locale files → use "locale" to create translation files
 - If I have locale files but no i18n setup → use "setup" to create configuration
 - If I have i18n setup but no integration → use "integrate" to integrate into app
-- If I have integration but haven't validated → use "validate" to check everything works
-- If everything is complete and working → use "complete" to finish
+- If I have integration and everything is complete → use "complete" to finish
 - Don't keep repeating the same action if it's not finding new data
 - SearchTool only discovers files, AnalyzeTool finds strings in files
 - Transform before translate - replace hardcoded strings with t() calls first
@@ -229,10 +226,7 @@ Respond with JSON:
             return Decision('integrate', 'Integrate i18n into app', 0.8, 'Integrate i18n into Next.js', 'retry')
         
         if state.phase == 'integration' and state.integrate_results:
-            return Decision('validate', 'Validate implementation', 0.8, 'Validate everything works', 'retry')
-        
-        if state.phase == 'validating':
-            return Decision('complete', 'Validation complete', 0.9, 'Finish successfully', 'retry')
+            return Decision('complete', 'Integration complete', 0.9, 'Finish successfully', 'retry')
         
         return Decision('search', 'Default fallback', 0.5, 'Continue workflow', 'retry')
     

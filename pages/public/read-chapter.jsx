@@ -5,6 +5,7 @@ import Error from 'next/error';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import throttle from 'lodash/throttle';
+import { useTranslation } from 'react-i18next';
 
 import Link from 'next/link';
 
@@ -31,6 +32,7 @@ function ReadChapterFunctional({
   checkoutCanceled,
   error,
 }) {
+  const { t } = useTranslation();
   const [showTOC, setShowTOC] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -114,7 +116,7 @@ function ReadChapterFunctional({
       }
 
       if (checkoutCanceled) {
-        notify('Checkout canceled');
+        notify(t("notification.checkout_canceled"));
       }
 
       if (error) {
@@ -140,7 +142,7 @@ function ReadChapterFunctional({
         document.getElementById('main-content').removeEventListener('scroll', onScroll);
       }
     };
-  }, [chapter._id]);
+  }, [chapter._id, checkoutCanceled, t, error, prevIsMobile, prevChapter, chapter]);
 
   const toggleChapterList = () => {
     setShowTOC((prevState) => ({ showTOC: !prevState.showTOC }));
@@ -267,7 +269,7 @@ function ReadChapterFunctional({
       <Head>
         <title>
           {chapterInsideState.title === 'Introduction'
-            ? 'Introduction'
+            ? t("title.introduction")
             : `Chapter ${chapterInsideState.order - 1}. ${chapterInsideState.title}`}
         </title>
         {chapterInsideState.seoDescription ? (
