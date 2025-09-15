@@ -1,7 +1,23 @@
 # 🤖 Autonomous I18n Agent
 
-An intelligent AI-powered agent that automatically internationalizes React applications by finding hardcoded strings, transforming them to use translation functions, generating translations, and integrating everything into your Next.js app.
+An intelligent AI-powered Python agent that automatically internationalizes React applications by finding hardcoded strings, transforming them to use translation functions, generating translations, and integrating everything into your Next.js app.
 
+## 🏗️ Python Agent Architecture
+
+The agent is built with a modular Python architecture:
+
+- **`core/autonomous_agent.py`** - Main agent orchestrator
+- **`tools/`** - Specialized tools for each phase:
+  - `search_tool.py` - File discovery and search
+  - `analyze_tool.py` - String analysis and key generation
+  - `transform_tool.py` - Code transformation
+  - `translate_tool.py` - Translation generation
+  - `locale_tool.py` - Locale file management
+  - `setup_tool.py` - i18n configuration
+  - `integrate_tool.py` - Component integration
+- **`decision/decision_engine.py`** - Decision making logic
+- **`state/state_manager.py`** - Agent state management
+- **`error/error_handler.py`** - Error handling and recovery
 
 ## 🔄 Agent Workflow
 
@@ -12,7 +28,7 @@ The autonomous agent follows an 8-phase workflow:
 - Stores file list in agent memory
 
 ### Phase 2: 📊 **Analyze** 
-- Uses GPT to find hardcoded strings in each file
+- Uses AI to find hardcoded strings in each file
 - Identifies user-facing text (buttons, labels, alt text, etc.)
 - Generates semantic translation keys
 
@@ -22,7 +38,7 @@ The autonomous agent follows an 8-phase workflow:
 - Maintains all existing functionality
 
 ### Phase 4: 🌐 **Translate**
-- Uses Claude to generate translations for target language
+- Uses Claude AI to generate translations for target language
 - Creates translation mappings
 
 ### Phase 5: 📝 **Locale**
@@ -38,19 +54,16 @@ The autonomous agent follows an 8-phase workflow:
 - Creates language switcher component
 - Integrates switcher into header
 
-### Phase 8: ✅ **Validate & Complete**
-- Validates all components work together
-- Checks for errors and issues
-- Marks task as complete
+
 
 ## 🚀 Quick Start Guide
 
 ### Prerequisites
 
 1. **Node.js** (v18.15.0 or higher)
-2. **API Keys** in your `.env` file:
+2. **Python** (v3.8 or higher)
+3. **API Keys** in your `.env` file:
    ```env
-   OPENAI_API_KEY=your-openai-key
    ANTHROPIC_API_KEY=your-anthropic-key
    SESSION_SECRET=your-session-secret
    MONGO_URL=mongodb://localhost:27017/your-db
@@ -59,30 +72,60 @@ The autonomous agent follows an 8-phase workflow:
 
 ### Installation
 
-```bash
-npm install
-```
+1. **Install Node.js dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Set up Python virtual environment:**
+   ```bash
+   # Create virtual environment
+   python -m venv venv
+   
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   
+   # Install Python dependencies
+   pip install -r pythonAgent/requirements.txt
+   ```
 
 ### Commands
 
 | Command | Description |
 |---------|-------------|
-| `npm run i18n:agent` | Run the autonomous agent on the full project |
-| `npm run i18n:test-minimal` | Test the agent on a minimal folder (test-i18n/) |
+| `npm run i18n:agent` | Run the Python autonomous agent on the full project |
 | `npm run i18n:backup` | Create backup of current files |
 | `npm run i18n:restore` | Restore files and delete i18n files |
 | `npm run i18n:backup-info` | Show backup information |
 
+**Python Agent Commands:**
+| Command | Description |
+|---------|-------------|
+| `python pythonAgent/main.py` | Run the Python autonomous agent directly |
+| `python -m venv venv` | Create Python virtual environment |
+| `pip install -r pythonAgent/requirements.txt` | Install Python dependencies |
+
 ### Usage
 
 ```bash
-# 1. Create backup (optional but recommended)
+# 1. Activate Python virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# 2. Create backup (optional but recommended)
 npm run i18n:backup
 
-# 2. Run the agent
+# 3. Run the Python agent
 npm run i18n:agent
+# OR run directly:
+python pythonAgent/main.py
 
-# 3. If you want to undo everything
+# 4. If you want to undo everything
 npm run i18n:restore
 ```
 
@@ -104,4 +147,13 @@ I18N_TARGET_LANGUAGE=ar    # Arabic
 I18N_TARGET_LANGUAGE=ru    # Russian
 ```
 
-**Supported Languages**: Any language supported by Claude Sonnet 4. The agent will automatically create locale files for both the target language and English (as fallback).
+**Supported Languages**: Any language supported by Claude AI. The Python agent will automatically create locale files for both the target language and English (as fallback).
+
+## 🐍 Python Agent Benefits
+
+- **Async Processing**: Handles multiple files concurrently for faster processing
+- **Modular Architecture**: Easy to extend and customize individual tools
+- **Robust Error Handling**: Graceful recovery from API failures and edge cases
+- **State Management**: Maintains context across all phases
+- **Memory Efficient**: Processes large codebases without memory issues
+- **Cross-Platform**: Works on Windows, macOS, and Linux
