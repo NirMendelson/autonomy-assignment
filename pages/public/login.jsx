@@ -26,7 +26,7 @@ function Login({ router }) {
       </Head>
       <br />
       <p style={{ margin: '45px auto', fontSize: '44px', fontWeight: '400' }}>{t('heading.login')}</p>
-      <p>{t('info.session_duration')}</p>
+      <p>{t('message.session_info')}</p>
       <br />
       <Button
         variant="contained"

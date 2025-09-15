@@ -6,9 +6,9 @@ import Hidden from '@mui/material/Hidden';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import { useTranslation } from 'react-i18next';
-import LanguageSwitcher from './LanguageSwitcher';
 
 import MenuWithAvatar from './MenuWithAvatar';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const propTypes = {
   user: PropTypes.shape({
@@ -68,7 +68,6 @@ function Header({ user, hideHeader, redirectUrl }) {
       }}
     >
       <Toolbar>
-          <LanguageSwitcher />
         <Grid container direction="row" justifyContent="space-around" alignItems="center">
           <Grid item sm={8} xs={7} style={{ textAlign: 'left' }}>
             {user ? null : (
@@ -93,38 +92,41 @@ function Header({ user, hideHeader, redirectUrl }) {
             ) : null}
           </Grid>
           <Grid item sm={2} xs={3} style={{ textAlign: 'right' }}>
-            {user ? (
-              <div style={{ whiteSpace: ' nowrap' }}>
-                {!user.isAdmin ? (
-                  <MenuWithAvatar
-                    options={optionsMenuCustomer}
-                    src={user.avatarUrl}
-                    alt={user.displayName}
-                  />
-                ) : null}
-                {user.isAdmin ? (
-                  <MenuWithAvatar
-                    options={optionsMenuAdmin}
-                    src={user.avatarUrl}
-                    alt={user.displayName}
-                  />
-                ) : null}
-              </div>
-            ) : (
-              <Link
-                href={{
-                  pathname: '/public/login',
-                  query: { redirectUrl },
-                }}
-                as={{
-                  pathname: '/login',
-                  query: { redirectUrl },
-                }}
-                style={{ margin: '0px 20px 0px auto' }}
-              >
-                {t('link.log_in')}
-              </Link>
-            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <LanguageSwitcher />
+              {user ? (
+                <div style={{ whiteSpace: ' nowrap' }}>
+                  {!user.isAdmin ? (
+                    <MenuWithAvatar
+                      options={optionsMenuCustomer}
+                      src={user.avatarUrl}
+                      alt={user.displayName}
+                    />
+                  ) : null}
+                  {user.isAdmin ? (
+                    <MenuWithAvatar
+                      options={optionsMenuAdmin}
+                      src={user.avatarUrl}
+                      alt={user.displayName}
+                    />
+                  ) : null}
+                </div>
+              ) : (
+                <Link
+                  href={{
+                    pathname: '/public/login',
+                    query: { redirectUrl },
+                  }}
+                  as={{
+                    pathname: '/login',
+                    query: { redirectUrl },
+                  }}
+                  style={{ margin: '0px 20px 0px auto' }}
+                >
+                  {t('link.log_in')}
+                </Link>
+              )}
+            </div>
           </Grid>
         </Grid>
       </Toolbar>

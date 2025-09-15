@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'next-i18next';
 
 import PropTypes from 'prop-types';
 import Error from 'next/error';
 import Head from 'next/head';
 import { withRouter } from 'next/router';
 import throttle from 'lodash/throttle';
-import { useTranslation } from 'react-i18next';
 
 import Link from 'next/link';
 
@@ -116,7 +116,7 @@ function ReadChapterFunctional({
       }
 
       if (checkoutCanceled) {
-        notify(t("notification.checkout_canceled"));
+        notify(t('notification.checkout_canceled'));
       }
 
       if (error) {
@@ -142,7 +142,7 @@ function ReadChapterFunctional({
         document.getElementById('main-content').removeEventListener('scroll', onScroll);
       }
     };
-  }, [chapter._id, checkoutCanceled, t, error, prevIsMobile, prevChapter, chapter]);
+  }, [chapter._id]);
 
   const toggleChapterList = () => {
     setShowTOC((prevState) => ({ showTOC: !prevState.showTOC }));
@@ -165,7 +165,7 @@ function ReadChapterFunctional({
     return (
       <div style={{ padding }} id="chapter-content">
         <h2 style={{ fontWeight: '400', lineHeight: '1.5em' }}>
-          {chapterInsideState.order > 1 ? `Chapter ${chapterInsideState.order - 1}: ` : null}
+          {chapterInsideState.order > 1 ? `${t('chapter.prefix')} ${chapterInsideState.order - 1}: ` : null}
           {chapterInsideState.title}
         </h2>
         {!chapterInsideState.isPurchased && !chapterInsideState.isFree ? (
@@ -269,8 +269,8 @@ function ReadChapterFunctional({
       <Head>
         <title>
           {chapterInsideState.title === 'Introduction'
-            ? t("title.introduction")
-            : `Chapter ${chapterInsideState.order - 1}. ${chapterInsideState.title}`}
+            ? t('chapter.introduction_title')
+            : `${t('chapter.prefix')} ${chapterInsideState.order - 1}. ${chapterInsideState.title}`}
         </title>
         {chapterInsideState.seoDescription ? (
           <meta name="description" content={chapterInsideState.seoDescription} />

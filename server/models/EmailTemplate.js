@@ -25,17 +25,17 @@ async function insertTemplates(t) {
   const templates = [
     {
       name: 'welcome',
-      subject: t('email.welcome.subject'),
+      subject: t('email.welcome_subject'),
       message: `<%= userName %>,
         <p>
-          ${t('email.welcome.intro')}
+          ${t('email.welcome_intro')}
         </p>
         <p>
-          ${t('email.welcome.books_link')}
+          ${t('email.welcome_books_link')}
         </p>
 
-        ${t('email.welcome.signature_names')}
-        ${t('email.welcome.signature_team')}
+        ${t('email.welcome_signature_names')}
+        ${t('email.welcome_signature_team')}
       `,
     },
   ];

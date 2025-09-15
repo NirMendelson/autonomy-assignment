@@ -151,26 +151,16 @@ export default LanguageSwitcher;"""
                 
                 # Check if already has language switcher
                 if 'LanguageSwitcher' not in header_content:
-                    # Add import
-                    import_match = re.search(r'import.*from.*react-i18next.*;', header_content)
-                    if import_match:
-                        import_index = header_content.rfind(import_match.group(0)) + len(import_match.group(0))
-                        header_content = (header_content[:import_index] + 
-                                        "\nimport LanguageSwitcher from './LanguageSwitcher';" + 
-                                        header_content[import_index:])
+                    # Use Claude to modify the Header component properly
+                    updated_header = await self._ask_claude_to_modify_header(header_content)
                     
-                    # Add LanguageSwitcher to the JSX (find a good spot in the header)
-                    toolbar_match = re.search(r'<Toolbar[^>]*>', header_content)
-                    if toolbar_match:
-                        toolbar_index = header_content.rfind(toolbar_match.group(0)) + len(toolbar_match.group(0))
-                        header_content = (header_content[:toolbar_index] + 
-                                        "\n          <LanguageSwitcher />" + 
-                                        header_content[toolbar_index:])
-                    
-                    header_path.write_text(header_content, encoding='utf-8')
-                    self.log('    Added language switcher to Header')
-                    results['files_modified'] += 1
-                    results['files'][str(header_path)] = 'updated'
+                    if updated_header and updated_header != header_content:
+                        header_path.write_text(updated_header, encoding='utf-8')
+                        self.log('    Added language switcher to Header')
+                        results['files_modified'] += 1
+                        results['files'][str(header_path)] = 'updated'
+                    else:
+                        self.log('    Failed to modify Header with Claude')
                 else:
                     self.log('    Header already has language switcher')
             
@@ -187,3 +177,43 @@ export default LanguageSwitcher;"""
         except Exception as error:
             self.error(f'Integration failed: {error}')
             raise error
+    
+    async def _ask_claude_to_modify_header(self, header_content: str) -> str:
+        """Ask Claude to modify the Header component to include LanguageSwitcher."""
+        prompt = f"""You are a React/JSX expert. I need you to modify this Header component to include a LanguageSwitcher component.
+
+TASK: Add the LanguageSwitcher component to the Header component in the right Grid item (the one with sm={{2}} xs={{3}} and textAlign: 'right').
+
+REQUIREMENTS:
+1. Add the import: `import LanguageSwitcher from './LanguageSwitcher';`
+2. Add the LanguageSwitcher component inside the right Grid item
+3. Wrap both the LanguageSwitcher and the existing content in a flex container
+4. Use proper styling: `{{ display: 'flex', alignItems: 'center', gap: '10px' }}`
+5. Keep all existing functionality intact
+6. Maintain proper JSX structure and indentation
+
+CURRENT HEADER COMPONENT:
+```jsx
+{header_content}
+```
+
+Please return the complete modified Header component with the LanguageSwitcher properly integrated."""
+
+        try:
+            response = await self.ask_claude(prompt, 4000)
+            # Extract the JSX code from the response
+            if '```jsx' in response:
+                start = response.find('```jsx') + 6
+                end = response.find('```', start)
+                if end > start:
+                    return response[start:end].strip()
+            elif '```' in response:
+                start = response.find('```') + 3
+                end = response.find('```', start)
+                if end > start:
+                    return response[start:end].strip()
+            else:
+                return response.strip()
+        except Exception as error:
+            self.error(f'Failed to modify Header with Claude: {error}')
+            return header_content

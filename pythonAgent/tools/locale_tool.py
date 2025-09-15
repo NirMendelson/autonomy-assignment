@@ -33,7 +33,16 @@ class LocaleTool(BaseTool):
         
         # Create Spanish common.json file
         spanish_file = locale_dir / 'common.json'
-        spanish_translations = self._build_common_translations(translate_results.get('translations', []))
+        translations_data = translate_results.get('translations', [])
+        self.log(f'  Received {len(translations_data)} translations from TranslateTool')
+        
+        spanish_translations = self._build_common_translations(translations_data)
+        self.log(f'  Built {len(spanish_translations)} Spanish translations')
+        
+        # Debug: Log some sample translations
+        sample_keys = list(spanish_translations.keys())[:3]
+        for key in sample_keys:
+            self.log(f'    Sample: {key} -> "{spanish_translations[key]}"')
         
         try:
             spanish_file.write_text(json.dumps(spanish_translations, indent=2, ensure_ascii=False), encoding='utf-8')
@@ -81,15 +90,20 @@ class LocaleTool(BaseTool):
         # Handle array of translations (from TranslateTool)
         if isinstance(translations, list):
             for translation in translations:
-                if translation.get('key') and translation.get('translation'):
-                    common[translation['key']] = translation['translation']
+                if translation.get('key'):
+                    # Use 'translation' field if available, otherwise use 'text' as fallback
+                    translated_text = translation.get('translation') or translation.get('text', '')
+                    if translated_text:
+                        common[translation['key']] = translated_text
         elif isinstance(translations, dict):
             # Handle object format (legacy)
             for category_translations in translations.values():
                 if isinstance(category_translations, list):
                     for translation in category_translations:
-                        if translation.get('key') and translation.get('translation'):
-                            common[translation['key']] = translation['translation']
+                        if translation.get('key'):
+                            translated_text = translation.get('translation') or translation.get('text', '')
+                            if translated_text:
+                                common[translation['key']] = translated_text
         
         return common
     

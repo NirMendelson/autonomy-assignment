@@ -69,6 +69,10 @@ TRANSLATION GUIDELINES:
 4. Make translations natural and user-friendly
 5. Keep button text concise and action-oriented
 6. Ensure labels are clear and descriptive
+7. For login/authentication terms, use standard Spanish UI conventions
+8. "Log in" should be "Iniciar sesión" (not "Log in")
+9. "Log out" should be "Cerrar sesión" (not "Log out")
+10. Button text should be action-oriented and clear
 
 STRINGS TO TRANSLATE:
 {chr(10).join([f'- "{s["text"]}" (key: {s["key"]})' for s in strings])}
@@ -85,6 +89,10 @@ key: "translated_text"
             
             translations = self._parse_translations(response, strings)
             self.log(f'  Parsed {len(translations)} translations')
+            
+            # Debug: Log some sample translations
+            for i, translation in enumerate(translations[:3]):  # Show first 3
+                self.log(f'    Sample {i+1}: {translation.get("key")} -> "{translation.get("translation")}"')
             
             return translations
         except Exception as error:

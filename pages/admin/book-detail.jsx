@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Error from 'next/error';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { getBookDetailApiMethod, syncBookContentApiMethod } from '../../lib/api/admin';
 import withAuth from '../../lib/withAuth';

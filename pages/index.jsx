@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head';
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from 'react-i18next';
 
 import withAuth from '../lib/withAuth';
 
@@ -26,7 +26,7 @@ class Index extends React.Component {
           <title>{t('page.title')}</title>
           <meta name="description" content={t('meta.description')} />
         </Head>
-        <p>{t('heading.purchased_books')}</p>
+        <p>{t('content.books_list')}</p>
         <p>{t('label.email')}&nbsp;{user.email}</p>
       </div>
     );

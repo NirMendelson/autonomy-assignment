@@ -37,7 +37,7 @@ class MenuWithAvatar extends React.Component {
       <div>
         <Avatar
           aria-controls={anchorEl ? 'simple-menu' : null}
-          aria-haspopup={t("aria.haspopup")}
+          aria-haspopup={t("aria.has_popup")}
           onClick={this.handleClick}
           onKeyPress={this.handleClick}
           src={src}
@@ -81,9 +81,9 @@ MenuWithAvatar.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-function MenuWithAvatarWithTranslation(props) {
+function MenuWithAvatarWrapper(props) {
   const { t } = useTranslation();
   return <MenuWithAvatar {...props} t={t} />;
 }
 
-export default MenuWithAvatarWithTranslation;
+export default MenuWithAvatarWrapper;
