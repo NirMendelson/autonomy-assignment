@@ -21,43 +21,43 @@ const mongoSchema = new Schema({
 
 const EmailTemplate = mongoose.model('EmailTemplate', mongoSchema);
 
-async function insertTemplates() {
+async function insertTemplates(t) {
   const templates = [
     {
       name: 'welcome',
-      subject: 'Welcome to builderbook.org',
+      subject: t('email.welcome.subject'),
       message: `<%= userName %>,
         <p>
-          At Builder Book, we are excited to help you build useful, production-ready web apps from scratch.
+          ${t('email.welcome.intro')}
         </p>
         <p>
-          See list of available books here.
+          ${t('email.welcome.books_link')}
         </p>
 
-        Kelly & Timur,
-        Team BB
+        ${t('email.welcome.signature_names')}
+        ${t('email.welcome.signature_team')}
       `,
     },
   ];
 
-  for (const t of templates) { // eslint-disable-line
-    const et = await EmailTemplate.findOne({ name: t.name }); // eslint-disable-line
+  for (const template of templates) { // eslint-disable-line
+    const et = await EmailTemplate.findOne({ name: template.name }); // eslint-disable-line
 
-    const message = t.message.replace(/\n/g, '').replace(/[ ]+/g, ' ').trim();
+    const message = template.message.replace(/\n/g, '').replace(/[ ]+/g, ' ').trim();
 
     if (!et) {
-      EmailTemplate.create({ ...t, message });
-    } else if (et.subject !== t.subject || et.message !== message) {
-      EmailTemplate.updateOne({ _id: et._id }, { $set: { message, subject: t.subject } }).exec();
+      EmailTemplate.create({ ...template, message });
+    } else if (et.subject !== template.subject || et.message !== message) {
+      EmailTemplate.updateOne({ _id: et._id }, { $set: { message, subject: template.subject } }).exec();
     }
   }
 }
 
-async function getEmailTemplate(name, params) {
+async function getEmailTemplate(name, params, t) {
   const et = await EmailTemplate.findOne({ name });
 
   if (!et) {
-    throw new Error(`No EmailTemplates found.`);
+    throw new Error(t('error.email_template_not_found'));
   }
 
   return {

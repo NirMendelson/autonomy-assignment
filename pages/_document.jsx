@@ -2,6 +2,7 @@
 import React from 'react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'next-i18next';
 
 import createEmotionServer from '@emotion/server/create-instance';
 import createCache from '@emotion/cache';
@@ -13,11 +14,13 @@ const propTypes = {
 };
 
 function MyDocument({ styles }) {
+  const { t } = useTranslation();
+
   return (
     <Html lang="en" style={{ height: '100%' }}>
       <Head>
         <meta charSet="utf-8" />
-        <meta name="google" content="notranslate" />
+        <meta name="google" content={t("meta.google_translate")} />
         <meta name="theme-color" content="#1976D2" />
 
         <link rel="shortcut icon" href="https://storage.googleapis.com/builderbook/favicon32.png" />

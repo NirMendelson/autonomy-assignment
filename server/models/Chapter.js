@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const { marked }= require('marked');
 const he = require('he');
 const hljs = require('highlight.js');
+const { useTranslation } = require('next-i18next');
 // const Book = require('./Book');
 const generateSlug = require('../utils/slugify');
 const Purchase = require('./Purchase');
 
 function markdownToHtml(content) {
+  const { t } = useTranslation();
   const renderer = new marked.Renderer();
 
   renderer.link = ({ href, title, text }) => {
@@ -20,7 +22,7 @@ function markdownToHtml(content) {
     src="${href}"
     style="border: 1px solid #ddd;"
     width="100%"
-    alt="Builder Book"
+    alt="${t('alt.builder_book')}"
   >`;
 
   renderer.heading = ({ text }, level) => {
@@ -161,15 +163,16 @@ const mongoSchema = new Schema({
 
 class ChapterClass {
   static async getBySlug({ bookSlug, chapterSlug, userId, isAdmin }) {
+    const { t } = useTranslation();
     const book = await Book.getBySlug({ slug: bookSlug });
     if (!book) {
-      throw new Error('Book not found');
+      throw new Error(t('error.book_not_found'));
     }
 
     const chapter = await this.findOne({ bookId: book._id, slug: chapterSlug });
 
     if (!chapter) {
-      throw new Error('Chapter not found');
+      throw new Error(t('error.chapter_not_found'));
     }
 
     const chapterObj = chapter.toObject();
