@@ -88,7 +88,6 @@ The autonomous agent follows an 8-phase workflow:
 **Python Agent Commands:**
 | Command | Description |
 |---------|-------------|
-| `python pythonAgent/main.py` | Run the Python autonomous agent directly |
 | `python -m venv venv` | Create Python virtual environment |
 | `pip install -r pythonAgent/requirements.txt` | Install Python dependencies |
 
